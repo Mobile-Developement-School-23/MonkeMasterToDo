@@ -49,4 +49,11 @@
     <string name="importance">Важность</string>
     <string name="deadline">Сделать до</string>
     <string name="delete">Удалить</string>
+
+    <string-array name="importance_array">
+        <item>Нет</item>
+        <item>Низкий</item>
+        <item>Высокий</item>
+
+    </string-array>
 </resources>

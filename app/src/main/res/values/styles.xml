@@ -37,6 +37,7 @@
         <item name="windowNoTitle">true</item>
         <item name="android:colorBackground">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/gray_light</item>
+        <item name="colorControlActivated">@color/blue</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -44,6 +45,7 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="android:color">@color/primary</item>
         <item name="cornerFamily">cut</item>
         <item name="cornerSize">@dimen/rounding_radius</item>
 
