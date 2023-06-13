@@ -58,19 +58,13 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tasks_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/tasks_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            tools:itemCount="20"
-            tools:listitem="@layout/item_todo" />
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:itemCount="20"
+        tools:listitem="@layout/item_todo" />
 
 
 

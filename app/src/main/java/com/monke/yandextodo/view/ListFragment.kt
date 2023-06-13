@@ -21,10 +21,14 @@ class ListFragment : Fragment() {
         val mockList = ArrayList<TodoItem>()
 
         for (i in 1..20) {
-            mockList.add(TodoItem(i.toString(), "Поступить в ШМР", 0, false))
+            mockList.add(TodoItem(i.toString(), "Поступить в ШМР", i % 3, false))
         }
 
-        val adapter = TodoItemAdapter(mockList)
+        val adapter = TodoItemAdapter(mockList, object : TodoItemAdapter.OnClickListener {
+            override fun OnClick(todoItem: TodoItem) {
+                (activity as MainActivity).setFragment(TaskFragment(todoItem))
+            }
+        })
         tasksRecycler.adapter = adapter
         tasksRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 

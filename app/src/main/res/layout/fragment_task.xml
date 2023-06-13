@@ -31,7 +31,7 @@
 
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/text_edit_txt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
@@ -60,7 +60,7 @@
         app:hintTextColor="@color/blue"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText">
+        app:layout_constraintTop_toBottomOf="@+id/text_edit_txt">
 
         <AutoCompleteTextView
             android:id="@+id/importance_menu"
