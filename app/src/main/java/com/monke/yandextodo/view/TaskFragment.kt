@@ -8,10 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputLayout
 import com.monke.yandextodo.R
+import com.monke.yandextodo.databinding.FragmentTaskBinding
 import com.monke.yandextodo.model.TodoItem
 
 class TaskFragment(todoItem: TodoItem? = null) : Fragment() {
@@ -20,20 +24,33 @@ class TaskFragment(todoItem: TodoItem? = null) : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_task, container, false)
+        val binding = FragmentTaskBinding.inflate(layoutInflater)
 
-        val importanceMenu = view.findViewById<AutoCompleteTextView>(R.id.importance_menu)
+        val importanceMenu = binding.importanceMenu
         val arrayAdapter = ArrayAdapter(context!!, R.layout.item_dropdown,
             resources.getStringArray(R.array.importance_array))
         importanceMenu.setAdapter(arrayAdapter)
 
         if (todoItem != null) {
-            val textEditTxt = view.findViewById<EditText>(R.id.text_edit_txt)
+            val textEditTxt = binding.textEditTxt
             textEditTxt.setText(todoItem.text)
             importanceMenu.setText(resources.getStringArray(R.array.importance_array)[todoItem.importance])
+        } else {
+            (binding.deleteBtn as MaterialButton).iconTint = context!!.getColorStateList(R.color.disable)
+            binding.deleteBtn.setTextColor(context!!.getColorStateList(R.color.disable))
+            binding.deleteBtn.isEnabled = false
         }
 
-        return view
+        binding.closeBtn.setOnClickListener {
+            parentFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, ListFragment()).commit()}
+
+        binding.saveBtn.setOnClickListener {
+            parentFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, ListFragment()).commit()}
+
+        binding.deleteBtn.setOnClickListener {
+            parentFragmentManager.beginTransaction().replace(R.id.fragmentContainerView, ListFragment()).commit()}
+
+        return binding.root
     }
 
 
