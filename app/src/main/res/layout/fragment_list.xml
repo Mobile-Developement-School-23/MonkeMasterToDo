@@ -14,7 +14,6 @@
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-
         <com.google.android.material.appbar.CollapsingToolbarLayout
             app:collapsedTitleTextColor="@color/black"
             app:expandedTitleTextColor="@color/black"
@@ -44,7 +43,6 @@
 
 
             <androidx.appcompat.widget.Toolbar
-
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -52,20 +50,18 @@
                 app:layout_collapseMode="pin"
                 app:title="@string/tasks_title" />
 
-
-
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:id="@+id/tasks_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:itemCount="20"
         tools:listitem="@layout/item_todo" />
-
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

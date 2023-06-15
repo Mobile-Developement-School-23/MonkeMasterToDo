@@ -21,7 +21,11 @@ class ListFragment : Fragment() {
         val mockList = ArrayList<TodoItem>()
 
         for (i in 1..20) {
-            mockList.add(TodoItem(i.toString(), "Поступить в ШМР", i % 3, false))
+            if (i % 2 == 0)
+                mockList.add(TodoItem(i.toString(), getString(R.string.big_task_text), i % 3, false))
+            else
+                mockList.add(TodoItem(i.toString(), "Поступить в ШМР", i % 3, false))
+            
         }
 
         val adapter = TodoItemAdapter(mockList, object : TodoItemAdapter.OnClickListener {
