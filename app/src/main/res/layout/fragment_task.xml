@@ -58,6 +58,7 @@
             android:layout_height="match_parent">
 
             <EditText
+                android:textAppearance="@style/Body"
                 android:id="@+id/text_edit_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -90,6 +91,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_edit_txt">
 
                 <AutoCompleteTextView
+                    android:textAppearance="@style/Body"
                     android:id="@+id/importance_menu"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -98,12 +100,14 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:visibility="gone"
-                android:id="@+id/textView"
+                android:textAppearance="@style/Body"
+                android:id="@+id/deadline_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="16dp"
-                android:text="TextView"
+                android:text="@string/deadline"
+                android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/importance_layout" />
 
@@ -113,6 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:padding="0dp"
                 android:text="@string/delete"
                 android:textColor="@color/red"
@@ -120,8 +125,27 @@
                 app:iconPadding="16dp"
                 app:iconTint="@color/red"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintTop_toBottomOf="@+id/deadline_switch" />
 
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/deadline_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/deadline_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/deadline_title"
+                android:layout_marginEnd="16dp"
+                tools:checked="true" />
+
+            <TextView
+                style="@style/Subhead"
+                android:textColor="@color/blue"
+                android:id="@+id/deadline_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="26 февраля 2021"
+                app:layout_constraintStart_toStartOf="@+id/deadline_title"
+                app:layout_constraintTop_toBottomOf="@+id/deadline_title" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

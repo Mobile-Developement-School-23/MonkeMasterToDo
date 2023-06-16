@@ -19,17 +19,18 @@ class ListFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
 
+        // Настройка RecyclerView для списка задач
         val tasksRecycler = view.findViewById<RecyclerView>(R.id.tasks_recycler)
-
-
-        val adapter = TodoItemAdapter(TodoItemsRepository.todoItemsList, object : TodoItemAdapter.OnClickListener {
-            override fun OnClick(todoItem: TodoItem) {
+        val adapter = TodoItemAdapter(object : TodoItemAdapter.OnClickListener {
+            override fun onClick(todoItem: TodoItem) {
                 (activity as MainActivity).setFragment(TaskFragment(todoItem))
             }
         })
+        adapter.todoItemList = TodoItemsRepository.todoItemsList
         tasksRecycler.adapter = adapter
         tasksRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
+        // Кнопка добавления задачи
         val addTaskButton = view.findViewById<FloatingActionButton>(R.id.add_task_btn)
         addTaskButton.setOnClickListener { (activity as MainActivity).setFragment(TaskFragment()) }
 
