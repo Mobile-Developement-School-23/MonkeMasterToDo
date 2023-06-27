@@ -1,8 +1,8 @@
-package com.monke.yandextodo.model
+package com.monke.yandextodo.domain
 
 import java.util.*
 
-data class TodoItem(val id: String, var text: String, var importance: Int,
+data class TodoItem(val id: String, var text: String, var importance: Importance,
                     val creationDate: Calendar,
                     var deadlineDate: Calendar? = null
 ) {

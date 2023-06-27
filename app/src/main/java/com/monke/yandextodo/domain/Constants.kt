@@ -1,7 +1,9 @@
 package com.monke.yandextodo.domain
 
 object Constants {
-    const val NO_IMPORTANCE = 0
-    const val LOW_IMPORTANCE = 1
-    const val HIGH_IMPORTANCE = 2
+
+    val MOCK_BIG_TASK_TEXT = "Sed ut perspiciatis, unde omnis iste natus error sit voluptatem\n" +
+            "        accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo\n" +
+            "        inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam\n" +
+            "        voluptatem, quia voluptas sit, aspernatur aut odit aut fugit"
 }
