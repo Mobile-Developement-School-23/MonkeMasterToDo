@@ -35,7 +35,18 @@ class TasksListFragment : Fragment() {
         savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Настройка RecyclerView для списка задач
+        configureTasksListAdapter()
+        configureAddTaskBtn()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        binding = null
+    }
+
+    // Настройка RecyclerView для списка задач
+    private fun configureTasksListAdapter() {
         val tasksRecycler = binding?.tasksRecycler
         val adapter = TodoItemAdapter(object : TodoItemAdapter.OnClickListener {
             override fun onClick(todoItem: TodoItem) {
@@ -55,18 +66,14 @@ class TasksListFragment : Fragment() {
             context,
             LinearLayoutManager.VERTICAL,
             false)
+    }
 
+    private fun configureAddTaskBtn() {
         // Кнопка добавления задачи
         val addTaskButton = binding?.addTaskBtn
         addTaskButton?.setOnClickListener { parentFragmentManager.beginTransaction().replace(
             R.id.fragmentContainerView, TaskFragment.newInstance()).
         addToBackStack("").commit() }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        binding = null
     }
 
 

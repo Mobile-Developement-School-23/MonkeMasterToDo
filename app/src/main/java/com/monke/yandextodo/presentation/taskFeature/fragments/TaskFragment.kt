@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
 import com.monke.yandextodo.R
 import com.monke.yandextodo.databinding.FragmentTaskBinding
 import com.monke.yandextodo.domain.Importance
 import com.monke.yandextodo.domain.TodoItem
+import com.monke.yandextodo.presentation.taskFeature.viewmodels.TaskViewModel
 import com.monke.yandextodo.utils.DateUtils
 import java.util.Calendar
 
@@ -20,6 +22,8 @@ class TaskFragment: Fragment() {
 
     private var binding: FragmentTaskBinding? = null
     private var todoItem: TodoItem? = null
+    private val viewModel: TaskViewModel by viewModels()
+    private var deadlineDate: Calendar? = null
 
     companion object {
 
@@ -51,7 +55,11 @@ class TaskFragment: Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
-        var todoItemId = arguments.apply { Bundle().apply { getString(ID_KEY) } }
+        var todoItemId = arguments?.getString(ID_KEY)
+        if (todoItemId != null) {
+            todoItem = viewModel.getTodoItem(todoItemId)
+            deadlineDate = todoItem?.deadlineDate
+        }
 
         configureImportanceMenu(view.context)
         configureDeadlineText()
@@ -82,18 +90,25 @@ class TaskFragment: Fragment() {
                 )
             }
         }
+
     }
 
     // Настройка кнопки удаления
     private fun configureDeleteButton(context: Context) {
-        binding?.deleteBtn?.setOnClickListener { parentFragmentManager.popBackStack()}
-        // Если режим редактирования, то отключает кнопку удаления
-        if (todoItem != null) {
+        binding?.deleteBtn?.setOnClickListener {
+            // Удаление задачи
+            if (todoItem != null)
+                todoItem?.let { it1 -> viewModel.deleteTodoItem(it1) }
+            parentFragmentManager.popBackStack()
+        }
+        // Если режим создания, то отключает кнопку удаления
+        if (todoItem == null) {
             (binding?.deleteBtn as MaterialButton).iconTint =
                 context.getColorStateList(R.color.disable)
             binding?.deleteBtn?.setTextColor(context.getColorStateList(R.color.disable))
             binding?.deleteBtn?.isEnabled = false
         }
+
     }
 
     // Настройка виджетов с датой дедлайна
@@ -123,6 +138,9 @@ class TaskFragment: Fragment() {
                             day,
                             month + 1,
                             year)
+                        deadlineDate = Calendar.getInstance().apply {
+                            this.set(year, month, day)
+                        }
                     },
                     Calendar.getInstance().get(Calendar.YEAR),
                     Calendar.getInstance().get(Calendar.MONTH),
@@ -151,7 +169,38 @@ class TaskFragment: Fragment() {
 
     // Настройка кнопки сохранения
     private fun configureSaveButton() {
-        binding?.saveBtn?.setOnClickListener { parentFragmentManager.popBackStack() }
+        // binding?.saveBtn?.isEnabled = false
+        binding?.saveBtn?.setOnClickListener {
+            // Добавление задания
+            todoItem.let {
+                if (it == null) {
+                    // Получение введенных данных
+                    val text = binding?.textEditTxt?.text.toString()
+                    val importanceString = binding?.importanceMenu?.text.toString()
+                    var importance: Importance?
+                    importance = getImportance(importanceString)
+
+                    // Добавление задачи
+                    viewModel.addTodoItem(text, deadlineDate, importance)
+                } else {
+                    // Получение введенных данных
+                    val text = binding?.textEditTxt?.text.toString()
+                    val importanceString = binding?.importanceMenu?.text.toString()
+                    var importance: Importance?
+                    importance = getImportance(importanceString)
+
+                    // Обновление данных задачи
+                    it.deadlineDate =  deadlineDate
+                    it.text = text
+                    it.importance = importance
+
+                    // Сохранение задачи
+                    viewModel.saveTodoItem(it)
+                }
+            }
+
+            parentFragmentManager.popBackStack()
+        }
     }
 
     // Настройка кнопки закрытия
@@ -165,11 +214,23 @@ class TaskFragment: Fragment() {
         binding?.textEditTxt?.setText(todoItem?.text)
     }
 
+    private fun getImportance(importanceString: String): Importance {
+        return when (importanceString) {
+            resources.getStringArray(R.array.importance_array)[0] ->
+                Importance.NO_IMPORTANCE
+            resources.getStringArray(R.array.importance_array)[1] ->
+                Importance.LOW
+            else -> Importance.HIGH
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
         binding = null
         todoItem = null
     }
+
+
 
 }
