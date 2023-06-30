@@ -2,6 +2,7 @@ package com.monke.yandextodo.data.converters
 
 import androidx.room.TypeConverter
 import com.monke.yandextodo.data.localStorage.roomModels.TodoItemRoom
+import com.monke.yandextodo.data.networkService.pojo.TodoItemPojo
 import com.monke.yandextodo.domain.Importance
 import com.monke.yandextodo.domain.TodoItem
 import java.util.*
@@ -44,21 +45,47 @@ object TodoItemConverters {
         return calendar.timeInMillis
     }
 
-    @TypeConverter
-    fun importanceToInt(importance: Importance): Int {
+    fun importanceToString(importance: Importance): String {
         if (importance == Importance.NO_IMPORTANCE)
-            return 0
-        else if (importance == Importance.LOW)
-            return 1
-        return 2
+            return "basic"
+        if (importance == Importance.LOW)
+            return "low"
+        return "important"
     }
 
-    @TypeConverter
-    fun intToImportance(importance: Int): Importance {
-        if (importance == 0)
+    fun importanceFromString(importance: String): Importance {
+        if (importance == "basic")
             return Importance.NO_IMPORTANCE
-        else if (importance == 1)
+        if (importance == "low")
             return Importance.LOW
         return Importance.HIGH
+    }
+
+    fun todoItemToPojo(todoItem: TodoItem): TodoItemPojo {
+        return TodoItemPojo(
+            id = todoItem.id,
+            text = todoItem.text,
+            deadline = calendarToLong(todoItem.deadlineDate),
+            done = todoItem.completed,
+            created_at = calendarToLong(todoItem.creationDate)!!,
+            changed_at = calendarToLong(todoItem.modifiedDate),
+            importance = importanceToString(todoItem.importance),
+            color = todoItem.color,
+            last_updated_by = todoItem.lastUpdatedBy
+        )
+    }
+
+    fun todoItemFromPojo(todoItemPojo: TodoItemPojo): TodoItem {
+        return TodoItem(
+            id = todoItemPojo.id,
+            text = todoItemPojo.text,
+            importance = importanceFromString(todoItemPojo.importance),
+            completed = todoItemPojo.done,
+            deadlineDate = calendarFromLong(todoItemPojo.deadline),
+            creationDate = calendarFromLong(todoItemPojo.created_at)!!,
+            modifiedDate = calendarFromLong(todoItemPojo.changed_at),
+            color = todoItemPojo.color,
+            lastUpdatedBy = todoItemPojo.last_updated_by
+        )
     }
 }

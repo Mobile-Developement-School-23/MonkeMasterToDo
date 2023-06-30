@@ -165,6 +165,7 @@ class TodoItemFragment: Fragment() {
             else {
                 // Если пользователь отменил выбор даты дедлайна
                 // Скрывает строку с датой
+                deadlineDate = null
                 binding?.deadlineTxt?.text = ""
                 binding?.deadlineTxt?.visibility = View.INVISIBLE
             }

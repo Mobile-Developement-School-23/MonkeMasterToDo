@@ -7,5 +7,7 @@ object Constants {
             "        inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam\n" +
             "        voluptatem, quia voluptas sit, aspernatur aut odit aut fugit"
 
-    val BEARER_TOKEN = "radiocast"
+    const val BEARER_TOKEN = "radiocast"
+
+    const val BASE_URL = "https://beta.mrdekk.ru/todobackend/"
 }

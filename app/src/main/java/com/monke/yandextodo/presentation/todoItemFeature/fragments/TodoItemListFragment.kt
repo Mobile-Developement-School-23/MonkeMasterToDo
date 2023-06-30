@@ -62,8 +62,10 @@ class TodoItemListFragment : Fragment() {
             }
 
             override fun onCheckboxClick(todoItem: TodoItem, onChecked: Boolean) {
-                todoItem.completed = onChecked
-                viewModel.saveTodoItem(todoItem)
+                if (todoItem.completed != onChecked) {
+                    todoItem.completed = onChecked
+                    viewModel.saveTodoItem(todoItem)
+                }
 
             }
         })

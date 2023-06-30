@@ -2,8 +2,6 @@ package com.monke.yandextodo.data.localStorage.databases
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.monke.yandextodo.data.converters.TodoItemConverters
 import com.monke.yandextodo.data.localStorage.dao.TodoItemDAO
 import com.monke.yandextodo.data.localStorage.roomModels.TodoItemRoom
 

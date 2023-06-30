@@ -8,7 +8,7 @@ import dagger.Provides
 object CacheStorageModule {
 
     @Provides
-    fun todoItemCacheStorage(): TodoItemCacheStorage {
+    fun provideTodoItemCacheStorage(): TodoItemCacheStorage {
         return TodoItemCacheStorage.getInstance()
     }
 

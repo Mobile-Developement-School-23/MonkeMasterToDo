@@ -8,5 +8,7 @@ data class TodoItem(val id: String,
                     val creationDate: Calendar,
                     var deadlineDate: Calendar? = null,
                     var modifiedDate: Calendar? = null,
-                    var completed: Boolean = false
+                    var completed: Boolean = false,
+                    var color: String? = null,
+                    var lastUpdatedBy : String? = null
 )

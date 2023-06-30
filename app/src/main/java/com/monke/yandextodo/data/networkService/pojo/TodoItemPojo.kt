@@ -1,6 +1,6 @@
-package com.monke.yandextodo.data.api
+package com.monke.yandextodo.data.networkService.pojo
 
-data class TodoItemRetrofit (
+data class TodoItemPojo (
     var id: String,
     var text: String,
     var importance: String,

@@ -44,7 +44,9 @@ class TodoItemViewModel @Inject constructor(
             deadlineDate = deadlineDate,
             importance = importance,
             id = UUID.randomUUID().toString(),
-            creationDate = Calendar.getInstance()
+            creationDate = Calendar.getInstance(),
+            lastUpdatedBy = "no id",
+            modifiedDate = Calendar.getInstance(),
         )
         todoItemsRepository.addTodoItem(todoItem)
     }
