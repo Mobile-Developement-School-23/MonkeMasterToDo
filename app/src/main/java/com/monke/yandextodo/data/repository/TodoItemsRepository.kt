@@ -1,6 +1,7 @@
 package com.monke.yandextodo.data.repository
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.monke.yandextodo.data.cacheStorage.TodoItemCacheStorage
 import com.monke.yandextodo.data.converters.TodoItemConverters
 import com.monke.yandextodo.data.localStorage.databases.TodoItemsDatabase
@@ -9,6 +10,7 @@ import com.monke.yandextodo.data.localStorage.roomModels.TodoItemsListRoom
 import com.monke.yandextodo.data.networkService.TodoItemService
 import com.monke.yandextodo.data.networkService.pojo.TodoItemContainer
 import com.monke.yandextodo.domain.TodoItem
+import com.monke.yandextodo.domain.TodoItemList
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.ArrayList
@@ -20,6 +22,8 @@ class TodoItemsRepository @Inject constructor(
     private val todoItemService: TodoItemService,
     private val todoItemsListDatabase: TodoItemsListDatabase
 ) {
+
+
 
     suspend fun fetchData() {
         fetchDataFromServer()
@@ -50,12 +54,11 @@ class TodoItemsRepository @Inject constructor(
             val revision = response.body()?.revision
             if (revision != null)
                 setLastKnownRevision(revision)
-        } //else
-            // Обработка ошибок
+        }
     }
 
     // Добавление задачи
-    suspend fun addTodoItem(todoItem: TodoItem) {
+    suspend fun addTodoItem(todoItem: TodoItem): RepositoryResponse {
         cacheStorage.addTodoItem(todoItem)
         todoItemsDatabase.todoItemDao().addTodoItems(TodoItemConverters.modelToRoom(todoItem))
         lateinit var response: RepositoryResponse
@@ -75,7 +78,6 @@ class TodoItemsRepository @Inject constructor(
             )
         } else {
             // Обработка ошибок
-            Log.d("ERROR ", serviceResponse.message())
             response = RepositoryResponse(
                 statusCode = serviceResponse.code(),
                 message = serviceResponse.message(),
@@ -83,11 +85,11 @@ class TodoItemsRepository @Inject constructor(
             )
         }
 
-        //return response
+        return response
 
     }
 
-    suspend fun deleteTodoItem(todoItem: TodoItem) {
+    suspend fun deleteTodoItem(todoItem: TodoItem): RepositoryResponse {
         cacheStorage.deleteTodoItem(todoItem)
         todoItemsDatabase.todoItemDao().delete(TodoItemConverters.modelToRoom(todoItem))
 
@@ -107,17 +109,16 @@ class TodoItemsRepository @Inject constructor(
                 statusCode = 200,
                 message = "Success"
             )
-            Log.d("SUCCESS", todoItem.text)
         } else {
             // Обработка ошибок
-            Log.d("ERROR ", serviceResponse.errorBody().toString())
-            Log.d("ERROR ", todoItem.text)
             response = RepositoryResponse(
                 statusCode = serviceResponse.code(),
                 message = serviceResponse.message(),
                 body = serviceResponse.body()
             )
         }
+
+        return response
 
     }
 
@@ -129,7 +130,7 @@ class TodoItemsRepository @Inject constructor(
         return cacheStorage.getTodoItemById(id)
     }
 
-    suspend fun setTodoItem(newItem: TodoItem) {
+    suspend fun setTodoItem(newItem: TodoItem): RepositoryResponse {
         cacheStorage.setTodoItem(newItem)
         todoItemsDatabase.todoItemDao().updateTodoItems(TodoItemConverters.modelToRoom(newItem))
 
@@ -149,11 +150,8 @@ class TodoItemsRepository @Inject constructor(
                 statusCode = 200,
                 message = "Success"
             )
-            Log.d("SUCCESS", newItem.text)
         } else {
             // Обработка ошибок
-            Log.d("ERROR ", serviceResponse.errorBody().toString())
-            Log.d("ERROR ", newItem.text)
             response = RepositoryResponse(
                 statusCode = serviceResponse.code(),
                 message = serviceResponse.message(),
@@ -161,12 +159,15 @@ class TodoItemsRepository @Inject constructor(
             )
         }
 
+        return response
+
     }
 
-    private suspend fun setLastKnownRevision(revision: Int) {
+    private fun setLastKnownRevision(revision: Int) {
         cacheStorage.setRevision(revision)
         todoItemsListDatabase.todoItemsListDao().updateTodoItems(TodoItemsListRoom(revision))
     }
+
 
 
 }

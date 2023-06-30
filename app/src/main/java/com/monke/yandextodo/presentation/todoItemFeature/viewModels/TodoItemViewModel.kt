@@ -9,12 +9,12 @@ import com.monke.yandextodo.domain.Importance
 import com.monke.yandextodo.domain.TodoItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
+// View-model для фрагментов с заданиями
 class TodoItemViewModel @Inject constructor(
     private val todoItemsRepository: TodoItemsRepository
 ) : ViewModel() {
@@ -22,12 +22,14 @@ class TodoItemViewModel @Inject constructor(
     private val _tasksList = MutableLiveData(ArrayList<TodoItem>())
     val tasksList: LiveData<ArrayList<TodoItem>> = _tasksList
 
+    val errorMessage = MutableLiveData<String>()
+
+
     init {
         viewModelScope.launch {
             _tasksList.value = todoItemsRepository.getTodoItemsList()
         }
     }
-
 
     fun getTodoItem(id: String): TodoItem? {
         return todoItemsRepository.getTodoItemById(id)
@@ -35,13 +37,14 @@ class TodoItemViewModel @Inject constructor(
 
     fun deleteTodoItem(todoItem: TodoItem) {
         CoroutineScope(Dispatchers.IO).launch {
-            todoItemsRepository.deleteTodoItem(todoItem)
+            val response = todoItemsRepository.deleteTodoItem(todoItem)
         }
 
     }
 
     fun saveTodoItem(newTodoItem: TodoItem) {
         CoroutineScope(Dispatchers.IO).launch {
+            newTodoItem.modifiedDate = Calendar.getInstance()
             todoItemsRepository.setTodoItem(newTodoItem)
         }
     }

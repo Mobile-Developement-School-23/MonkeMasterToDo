@@ -4,6 +4,7 @@ import com.monke.yandextodo.domain.Constants
 import okhttp3.Interceptor
 import okhttp3.Response
 
+// Interceptor для добавления токена в запрос
 class TokenInterceptor: Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request().newBuilder()

@@ -1,9 +1,6 @@
 package com.monke.yandextodo
 
 import android.app.Application
-import android.util.Log
-import com.monke.yandextodo.data.networkService.pojo.TodoItemContainer
-import com.monke.yandextodo.data.networkService.pojo.TodoItemPojo
 import com.monke.yandextodo.data.networkService.TodoItemService
 import com.monke.yandextodo.data.repository.TodoItemsRepository
 import com.monke.yandextodo.ioc.components.DaggerApplicationComponent
@@ -32,11 +29,11 @@ class App: Application() {
         super.onCreate()
 
         applicationComponent.inject(this)
+
+        // Загрузка данных в кэш
         CoroutineScope(Dispatchers.IO).launch {
             todoItemsRepository.fetchData()
         }
-
-        val BASE_URL = "https://beta.mrdekk.ru/todobackend/"
 
 
     }
