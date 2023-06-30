@@ -1,4 +1,4 @@
-package com.monke.yandextodo.presentation.taskFeature.fragments
+package com.monke.yandextodo.presentation.todoItemFeature.fragments
 
 import android.app.DatePickerDialog
 import android.content.Context
@@ -10,27 +10,30 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
+import com.monke.yandextodo.App
 import com.monke.yandextodo.R
 import com.monke.yandextodo.databinding.FragmentTaskBinding
 import com.monke.yandextodo.domain.Importance
 import com.monke.yandextodo.domain.TodoItem
-import com.monke.yandextodo.presentation.taskFeature.viewmodels.TaskViewModel
+import com.monke.yandextodo.presentation.todoItemFeature.viewModels.TodoItemViewModel
 import com.monke.yandextodo.utils.DateUtils
 import java.util.Calendar
+import javax.inject.Inject
 
-class TaskFragment: Fragment() {
+class TodoItemFragment: Fragment() {
 
+    @Inject
+    lateinit var viewModel: TodoItemViewModel
     private var binding: FragmentTaskBinding? = null
     private var todoItem: TodoItem? = null
-    private val viewModel: TaskViewModel by viewModels()
     private var deadlineDate: Calendar? = null
 
     companion object {
 
         private const val ID_KEY = "id"
 
-        fun newInstance(todoId: String? = null): TaskFragment =
-            TaskFragment().apply {
+        fun newInstance(todoId: String? = null): TodoItemFragment =
+            TodoItemFragment().apply {
                 arguments = Bundle().apply {
                     putString(ID_KEY, todoId)
                 }
@@ -45,6 +48,8 @@ class TaskFragment: Fragment() {
     ): View {
         val binding = FragmentTaskBinding.inflate(layoutInflater)
         this.binding = binding
+
+        (activity?.applicationContext as App).todoItemFragmentComponent.inject(this)
 
         return binding.root
     }
@@ -82,12 +87,11 @@ class TaskFragment: Fragment() {
         if (todoItem != null) {
             when (todoItem?.importance) {
                 Importance.NO_IMPORTANCE -> importanceMenu?.setText(
-                    resources.getStringArray(R.array.importance_array)[0])
+                    resources.getStringArray(R.array.importance_array)[0], false)
                 Importance.LOW -> importanceMenu?.setText(
-                    resources.getStringArray(R.array.importance_array)[1])
+                    resources.getStringArray(R.array.importance_array)[1], false)
                 else -> importanceMenu?.setText(
-                    resources.getStringArray(R.array.importance_array)[2]
-                )
+                    resources.getStringArray(R.array.importance_array)[2], false)
             }
         }
 

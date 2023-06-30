@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.monke.yandextodo.R
-import com.monke.yandextodo.presentation.taskFeature.fragments.TasksListFragment
+import com.monke.yandextodo.presentation.todoItemFeature.fragments.TodoItemListFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
 
         supportFragmentManager.beginTransaction().add(
             R.id.fragmentContainerView,
-            TasksListFragment()
+            TodoItemListFragment()
         ).commit()
 
     }

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
 
     android:orientation="vertical"
-    tools:context=".presentation.taskFeature.fragments.TaskFragment">
+    tools:context=".presentation.todoItemFeature.fragments.TodoItemFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar2"

@@ -1,4 +1,4 @@
-package com.monke.yandextodo.presentation.taskFeature.fragments
+package com.monke.yandextodo.presentation.todoItemFeature.fragments
 
 
 import android.os.Bundle
@@ -8,16 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.monke.yandextodo.App
 import com.monke.yandextodo.R
 import com.monke.yandextodo.databinding.FragmentTasksListBinding
 import com.monke.yandextodo.domain.TodoItem
-import com.monke.yandextodo.presentation.taskFeature.adapters.TodoItemAdapter
-import com.monke.yandextodo.presentation.taskFeature.viewmodels.TasksListViewModel
+import com.monke.yandextodo.presentation.todoItemFeature.adapters.TodoItemAdapter
+import com.monke.yandextodo.presentation.todoItemFeature.viewModels.TodoItemViewModel
+import javax.inject.Inject
 
-class TasksListFragment : Fragment() {
+class TodoItemListFragment : Fragment() {
 
+    @Inject
+    lateinit var viewModel: TodoItemViewModel
     private var binding: FragmentTasksListBinding? = null
-    private val viewModel: TasksListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,6 +29,8 @@ class TasksListFragment : Fragment() {
     ): View? {
         val binding = FragmentTasksListBinding.inflate(layoutInflater)
         this.binding = binding
+
+        (activity?.applicationContext as App).todoItemsListFragmentComponent.inject(this)
 
         return binding.root
     }
@@ -48,12 +53,18 @@ class TasksListFragment : Fragment() {
     // Настройка RecyclerView для списка задач
     private fun configureTasksListAdapter() {
         val tasksRecycler = binding?.tasksRecycler
-        val adapter = TodoItemAdapter(object : TodoItemAdapter.OnClickListener {
-            override fun onClick(todoItem: TodoItem) {
+        val adapter = TodoItemAdapter(object : TodoItemAdapter.TodoItemClickListener {
+            override fun onItemClick(todoItem: TodoItem) {
                 parentFragmentManager.beginTransaction().replace(
                     R.id.fragmentContainerView,
-                    TaskFragment.newInstance(todoItem.id)).
+                    TodoItemFragment.newInstance(todoItem.id)).
                 addToBackStack("").commit()
+            }
+
+            override fun onCheckboxClick(todoItem: TodoItem, onChecked: Boolean) {
+                todoItem.completed = onChecked
+                viewModel.saveTodoItem(todoItem)
+
             }
         })
         viewModel.tasksList.observe(viewLifecycleOwner) {
@@ -72,7 +83,7 @@ class TasksListFragment : Fragment() {
         // Кнопка добавления задачи
         val addTaskButton = binding?.addTaskBtn
         addTaskButton?.setOnClickListener { parentFragmentManager.beginTransaction().replace(
-            R.id.fragmentContainerView, TaskFragment.newInstance()).
+            R.id.fragmentContainerView, TodoItemFragment.newInstance()).
         addToBackStack("").commit() }
     }
 

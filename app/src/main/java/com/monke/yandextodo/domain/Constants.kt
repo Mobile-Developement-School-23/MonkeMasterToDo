@@ -6,4 +6,6 @@ object Constants {
             "        accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo\n" +
             "        inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam\n" +
             "        voluptatem, quia voluptas sit, aspernatur aut odit aut fugit"
+
+    val BEARER_TOKEN = "radiocast"
 }
