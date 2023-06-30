@@ -1,5 +1,6 @@
 package com.monke.yandextodo.data.cacheStorage
 
+import androidx.lifecycle.MutableLiveData
 import com.monke.yandextodo.domain.TodoItem
 import com.monke.yandextodo.domain.TodoItemList
 import kotlin.collections.ArrayList
@@ -7,7 +8,7 @@ import kotlin.collections.ArrayList
 // Хранение данных задачи в кэше
 class TodoItemCacheStorage private constructor() {
 
-    private var todoItemsList: TodoItemList = TodoItemList(0, ArrayList())
+    private var todoItemsList = TodoItemList(0, ArrayList())
 
     companion object {
 

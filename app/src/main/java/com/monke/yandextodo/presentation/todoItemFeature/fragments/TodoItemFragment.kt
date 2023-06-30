@@ -195,7 +195,7 @@ class TodoItemFragment: Fragment() {
                     importance = getImportance(importanceString)
 
                     // Обновление данных задачи
-                    it.deadlineDate =  deadlineDate
+                    it.deadlineDate = deadlineDate
                     it.text = text
                     it.importance = importance
 
@@ -221,11 +221,10 @@ class TodoItemFragment: Fragment() {
 
     private fun getImportance(importanceString: String): Importance {
         return when (importanceString) {
-            resources.getStringArray(R.array.importance_array)[0] ->
-                Importance.NO_IMPORTANCE
             resources.getStringArray(R.array.importance_array)[1] ->
                 Importance.LOW
-            else -> Importance.HIGH
+            resources.getStringArray(R.array.importance_array)[2] -> Importance.HIGH
+            else -> Importance.NO_IMPORTANCE
         }
     }
 

@@ -1,30 +1,31 @@
 package com.monke.yandextodo.data.networkService
 
-import com.monke.yandextodo.data.networkService.pojo.Response
+import com.monke.yandextodo.data.networkService.pojo.ServiceResponse
 import com.monke.yandextodo.data.networkService.pojo.TodoItemContainer
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface TodoItemApi {
     @GET("list")
-    fun getTodoItemsList(): Call<Response>
+    suspend fun getTodoItemsList(): Response<ServiceResponse>
 
     @POST("list")
-    fun addTodoItem(
+    suspend fun addTodoItem(
         @Header("X-Last-Known-Revision") lastKnownRevision: Int,
         @Body todoItem: TodoItemContainer
-    ): Call<Response>
+    ): Response<ServiceResponse>
 
     @PUT("list/{todoId}")
-    fun setTodoItem(
+    suspend fun setTodoItem(
         @Path("todoId") todoId: String,
         @Header("X-Last-Known-Revision") lastKnownRevision: Int,
         @Body todoItem: TodoItemContainer
-    ): Call<Response>
+    ): Response<ServiceResponse>
 
     @DELETE("list/{todoId}")
-    fun deleteTodoItem(
+    suspend fun deleteTodoItem(
         @Path("todoId") todoId: String,
         @Header("X-Last-Known-Revision") lastKnownRevision: Int
-    ): Call<Response>
+    ): Response<ServiceResponse>
 }

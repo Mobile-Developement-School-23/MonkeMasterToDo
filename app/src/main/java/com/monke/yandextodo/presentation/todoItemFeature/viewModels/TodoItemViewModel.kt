@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.monke.yandextodo.data.repository.TodoItemsRepository
 import com.monke.yandextodo.domain.Importance
 import com.monke.yandextodo.domain.TodoItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -31,11 +34,16 @@ class TodoItemViewModel @Inject constructor(
     }
 
     fun deleteTodoItem(todoItem: TodoItem) {
-        todoItemsRepository.deleteTodoItem(todoItem)
+        CoroutineScope(Dispatchers.IO).launch {
+            todoItemsRepository.deleteTodoItem(todoItem)
+        }
+
     }
 
     fun saveTodoItem(newTodoItem: TodoItem) {
-        todoItemsRepository.setTodoItem(newTodoItem)
+        CoroutineScope(Dispatchers.IO).launch {
+            todoItemsRepository.setTodoItem(newTodoItem)
+        }
     }
 
     fun addTodoItem(text: String, deadlineDate: Calendar?, importance: Importance) {
@@ -48,7 +56,9 @@ class TodoItemViewModel @Inject constructor(
             lastUpdatedBy = "no id",
             modifiedDate = Calendar.getInstance(),
         )
-        todoItemsRepository.addTodoItem(todoItem)
+        CoroutineScope(Dispatchers.IO).launch {
+            todoItemsRepository.addTodoItem(todoItem)
+        }
     }
 
 }
