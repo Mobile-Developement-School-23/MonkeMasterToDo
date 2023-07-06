@@ -1,26 +1,39 @@
 package com.monke.yandextodo.presentation.todoItemFeature.fragments
 
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.monke.yandextodo.App
 import com.monke.yandextodo.R
 import com.monke.yandextodo.databinding.FragmentTasksListBinding
 import com.monke.yandextodo.domain.TodoItem
 import com.monke.yandextodo.presentation.todoItemFeature.adapters.TodoItemAdapter
-import com.monke.yandextodo.presentation.todoItemFeature.viewModels.TodoItemViewModel
+import com.monke.yandextodo.viewModels.TodoItemViewModel
+import com.monke.yandextodo.viewModels.TodoItemViewModelFactory
 import javax.inject.Inject
 
 // Фрагмент со списком задач
 class TodoItemListFragment : Fragment() {
 
     @Inject
-    lateinit var viewModel: TodoItemViewModel
+    lateinit var viewModelFactory: TodoItemViewModelFactory
     private var binding: FragmentTasksListBinding? = null
+    private val viewModel: TodoItemViewModel by activityViewModels {
+        viewModelFactory
+    }
+
+    override fun onAttach(context: Context) {
+        (activity?.applicationContext as App).applicationComponent.mainTodoActivityComponent().
+            todoItemListFragmentComponent().inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,7 +43,6 @@ class TodoItemListFragment : Fragment() {
         val binding = FragmentTasksListBinding.inflate(layoutInflater)
         this.binding = binding
 
-        (activity?.applicationContext as App).todoItemsListFragmentComponent.inject(this)
 
         return binding.root
     }

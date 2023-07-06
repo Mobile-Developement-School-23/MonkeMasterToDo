@@ -1,4 +1,4 @@
-package com.monke.yandextodo.data.networkService
+package com.monke.yandextodo.data.networkService.api
 
 import com.monke.yandextodo.data.networkService.pojo.ServiceResponse
 import com.monke.yandextodo.data.networkService.pojo.TodoItemContainer

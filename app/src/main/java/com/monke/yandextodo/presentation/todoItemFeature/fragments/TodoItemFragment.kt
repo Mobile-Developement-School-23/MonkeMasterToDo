@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
 import com.monke.yandextodo.App
@@ -15,18 +16,24 @@ import com.monke.yandextodo.R
 import com.monke.yandextodo.databinding.FragmentTaskBinding
 import com.monke.yandextodo.domain.Importance
 import com.monke.yandextodo.domain.TodoItem
-import com.monke.yandextodo.presentation.todoItemFeature.viewModels.TodoItemViewModel
+import com.monke.yandextodo.viewModels.TodoItemViewModel
 import com.monke.yandextodo.utils.DateUtils
+import com.monke.yandextodo.viewModels.TodoItemViewModelFactory
 import java.util.Calendar
 import javax.inject.Inject
 
 class TodoItemFragment: Fragment() {
 
     @Inject
-    lateinit var viewModel: TodoItemViewModel
+    lateinit var viewModelFactory: TodoItemViewModelFactory
+
     private var binding: FragmentTaskBinding? = null
     private var todoItem: TodoItem? = null
     private var deadlineDate: Calendar? = null
+    private val viewModel: TodoItemViewModel by activityViewModels {
+        viewModelFactory
+    }
+
 
     companion object {
 
@@ -41,6 +48,12 @@ class TodoItemFragment: Fragment() {
 
     }
 
+    override fun onAttach(context: Context) {
+        (activity?.applicationContext as App).applicationComponent.mainTodoActivityComponent().
+            todoItemFragmentComponent().inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,8 +61,6 @@ class TodoItemFragment: Fragment() {
     ): View {
         val binding = FragmentTaskBinding.inflate(layoutInflater)
         this.binding = binding
-
-        (activity?.applicationContext as App).todoItemFragmentComponent.inject(this)
 
         return binding.root
     }

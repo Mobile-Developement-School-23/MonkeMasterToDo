@@ -1,5 +1,6 @@
-package com.monke.yandextodo.presentation.todoItemFeature.viewModels
+package com.monke.yandextodo.viewModels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,11 +25,11 @@ class TodoItemViewModel @Inject constructor(
 
     val errorMessage = MutableLiveData<String>()
 
-
     init {
         viewModelScope.launch {
             _tasksList.value = todoItemsRepository.getTodoItemsList()
         }
+
     }
 
     fun getTodoItem(id: String): TodoItem? {
@@ -36,32 +37,34 @@ class TodoItemViewModel @Inject constructor(
     }
 
     fun deleteTodoItem(todoItem: TodoItem) {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             val response = todoItemsRepository.deleteTodoItem(todoItem)
         }
-
     }
 
     fun saveTodoItem(newTodoItem: TodoItem) {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             newTodoItem.modifiedDate = Calendar.getInstance()
             todoItemsRepository.setTodoItem(newTodoItem)
         }
     }
 
     fun addTodoItem(text: String, deadlineDate: Calendar?, importance: Importance) {
-        val todoItem = TodoItem(
-            text = text,
-            deadlineDate = deadlineDate,
-            importance = importance,
-            id = UUID.randomUUID().toString(),
-            creationDate = Calendar.getInstance(),
-            lastUpdatedBy = "no id",
-            modifiedDate = Calendar.getInstance(),
-        )
-        CoroutineScope(Dispatchers.IO).launch {
-            todoItemsRepository.addTodoItem(todoItem)
+        viewModelScope.launch {
+            val todoItem = TodoItem(
+                text = text,
+                deadlineDate = deadlineDate,
+                importance = importance,
+                id = UUID.randomUUID().toString(),
+                creationDate = Calendar.getInstance(),
+                lastUpdatedBy = "no id",
+                modifiedDate = Calendar.getInstance(),
+            )
+            CoroutineScope(Dispatchers.IO).launch {
+                todoItemsRepository.addTodoItem(todoItem)
+            }
         }
     }
+
 
 }

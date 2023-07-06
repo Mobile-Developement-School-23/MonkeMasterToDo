@@ -1,29 +1,23 @@
 package com.monke.yandextodo.data.repository
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.monke.yandextodo.data.cacheStorage.TodoItemCacheStorage
 import com.monke.yandextodo.data.converters.TodoItemConverters
 import com.monke.yandextodo.data.localStorage.databases.TodoItemsDatabase
-import com.monke.yandextodo.data.localStorage.databases.TodoItemsListDatabase
-import com.monke.yandextodo.data.localStorage.roomModels.TodoItemsListRoom
-import com.monke.yandextodo.data.networkService.TodoItemService
+import com.monke.yandextodo.data.networkService.pojo.ServiceResponse
+import com.monke.yandextodo.data.networkService.service.TodoItemService
 import com.monke.yandextodo.data.networkService.pojo.TodoItemContainer
 import com.monke.yandextodo.domain.TodoItem
-import com.monke.yandextodo.domain.TodoItemList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.collections.ArrayList
 
-@Singleton
 class TodoItemsRepository @Inject constructor(
     private val cacheStorage: TodoItemCacheStorage,
     private val todoItemsDatabase: TodoItemsDatabase,
-    private val todoItemService: TodoItemService,
-    private val todoItemsListDatabase: TodoItemsListDatabase
+    private val todoItemService: TodoItemService
 ) {
-
-
 
     suspend fun fetchData() {
         fetchDataFromServer()
@@ -41,31 +35,55 @@ class TodoItemsRepository @Inject constructor(
     }
 
     private suspend fun fetchDataFromServer() {
-        val response = todoItemService.getService().getTodoItemsList()
-        if (response.isSuccessful) {
-            var todoItemsList = response.body()?.list?.map { TodoItemConverters.todoItemFromPojo(it) }
+        withContext(Dispatchers.IO) {
+            val serviceResponse = todoItemService.getService().getTodoItemsList()
+            lateinit var response: RepositoryResponse
+            try {
+                if (serviceResponse.isSuccessful) {
+                    var todoItemsList =
+                        serviceResponse.body()?.list?.map { TodoItemConverters.todoItemFromPojo(it) }
 
-            if (todoItemsList != null) {
-                for (todoItem in todoItemsList) {
-                    cacheStorage.addTodoItem(todoItem)
+                    if (todoItemsList != null) {
+                        for (todoItem in todoItemsList) {
+                            cacheStorage.addTodoItem(todoItem)
+                        }
+                    }
+
+                    val revision = serviceResponse.body()?.revision
+                    if (revision != null)
+                        setLastKnownRevision(revision)
+                    response = RepositoryResponse(
+                        statusCode = 200,
+                        message = "Success"
+                    )
+                } else {
+                    response = RepositoryResponse(
+                        statusCode = serviceResponse.code(),
+                        message = serviceResponse.message()
+                    )
+                    Log.d(serviceResponse.message(), serviceResponse.code().toString())
                 }
+            } catch (exception: Exception) {
+                Log.d("Error", exception.message + " unit")
+                response = RepositoryResponse(
+                    statusCode = 500,
+                    message = "Unknown error")
             }
-
-            val revision = response.body()?.revision
-            if (revision != null)
-                setLastKnownRevision(revision)
+            response
         }
+
     }
 
     // Добавление задачи
-    suspend fun addTodoItem(todoItem: TodoItem): RepositoryResponse {
+    suspend fun addTodoItem(todoItem: TodoItem) = withContext(Dispatchers.IO) {
         cacheStorage.addTodoItem(todoItem)
         todoItemsDatabase.todoItemDao().addTodoItems(TodoItemConverters.modelToRoom(todoItem))
         lateinit var response: RepositoryResponse
 
         val serviceResponse = todoItemService.getService().addTodoItem(
             cacheStorage.getLastKnownRevision(),
-            TodoItemContainer(element = TodoItemConverters.todoItemToPojo(todoItem)))
+            TodoItemContainer(element = TodoItemConverters.todoItemToPojo(todoItem))
+        )
         // Если запрос успешный
         if (serviceResponse.isSuccessful) {
             var lastKnownRevision = serviceResponse.body()?.revision
@@ -84,12 +102,11 @@ class TodoItemsRepository @Inject constructor(
                 body = serviceResponse.body()
             )
         }
-
-        return response
-
+        response
     }
 
-    suspend fun deleteTodoItem(todoItem: TodoItem): RepositoryResponse {
+
+    suspend fun deleteTodoItem(todoItem: TodoItem) = withContext(Dispatchers.IO) {
         cacheStorage.deleteTodoItem(todoItem)
         todoItemsDatabase.todoItemDao().delete(TodoItemConverters.modelToRoom(todoItem))
 
@@ -118,8 +135,7 @@ class TodoItemsRepository @Inject constructor(
             )
         }
 
-        return response
-
+        response
     }
 
     fun getTodoItemsList(): ArrayList<TodoItem> {
@@ -130,42 +146,49 @@ class TodoItemsRepository @Inject constructor(
         return cacheStorage.getTodoItemById(id)
     }
 
-    suspend fun setTodoItem(newItem: TodoItem): RepositoryResponse {
+    suspend fun setTodoItem(newItem: TodoItem) = withContext(Dispatchers.IO) {
         cacheStorage.setTodoItem(newItem)
         todoItemsDatabase.todoItemDao().updateTodoItems(TodoItemConverters.modelToRoom(newItem))
 
         lateinit var response: RepositoryResponse
-        // Запрос на изменение задачи на сервере
-        val serviceResponse = todoItemService.getService().setTodoItem(
-            newItem.id,
-            cacheStorage.getLastKnownRevision(),
-            TodoItemContainer(element = TodoItemConverters.todoItemToPojo(newItem)))
-        // Если запрос успешный
-        if (serviceResponse.isSuccessful) {
-            var lastKnownRevision = serviceResponse.body()?.revision
+        lateinit var serviceResponse: retrofit2.Response<ServiceResponse>
+        try {
+            // Запрос на изменение задачи на сервере
+            val lastRevision = cacheStorage.getLastKnownRevision()
+            serviceResponse = todoItemService.getService().setTodoItem(
+                newItem.id,
+                lastRevision,
+                TodoItemContainer(element = TodoItemConverters.todoItemToPojo(newItem)))
+            // Если запрос успешный
+            if (serviceResponse.isSuccessful) {
+                var lastKnownRevision = serviceResponse.body()?.revision
 
-            if (lastKnownRevision != null)
-                setLastKnownRevision(lastKnownRevision)
-            response = RepositoryResponse(
-                statusCode = 200,
-                message = "Success"
-            )
-        } else {
-            // Обработка ошибок
-            response = RepositoryResponse(
-                statusCode = serviceResponse.code(),
-                message = serviceResponse.message(),
-                body = serviceResponse.body()
-            )
+                if (lastKnownRevision != null)
+                    setLastKnownRevision(lastKnownRevision)
+                response = RepositoryResponse(
+                    statusCode = 200,
+                    message = "Success"
+                )
+            } else {
+                // Обработка ошибок
+                Log.d("Error", "${serviceResponse.code()} ${serviceResponse.body()}")
+                response = RepositoryResponse(
+                    statusCode = serviceResponse.code(),
+                    message = serviceResponse.message(),
+                    body = serviceResponse.body()
+                )
+            }
+
+            response
+        }catch (e: Exception) {
+            Log.d("Error", e.message.toString())
         }
-
-        return response
 
     }
 
     private fun setLastKnownRevision(revision: Int) {
         cacheStorage.setRevision(revision)
-        todoItemsListDatabase.todoItemsListDao().updateTodoItems(TodoItemsListRoom(revision))
+       // todoItemsListDatabase.todoItemsListDao().updateTodoItems(RevisionRoom(revision))
     }
 
 

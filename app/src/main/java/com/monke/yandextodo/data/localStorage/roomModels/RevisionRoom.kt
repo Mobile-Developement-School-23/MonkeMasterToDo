@@ -5,8 +5,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class TodoItemsListRoom (
+data class RevisionRoom (
     @PrimaryKey
-    @ColumnInfo(name = "revision")
+    var id: Int,
     var revision: Int
 )
