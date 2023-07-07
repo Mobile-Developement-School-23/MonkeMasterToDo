@@ -5,6 +5,7 @@ import com.monke.yandextodo.App
 import com.monke.yandextodo.ioc.modules.CacheStorageModule
 import com.monke.yandextodo.ioc.modules.NetworkModule
 import com.monke.yandextodo.ioc.modules.RoomModule
+import com.monke.yandextodo.ioc.modules.WorkerModule
 import com.monke.yandextodo.ioc.scopes.AppScope
 import com.monke.yandextodo.presentation.MainTodoActivity
 import dagger.BindsInstance
@@ -15,7 +16,8 @@ import dagger.Component
 @Component(modules = [
     CacheStorageModule::class,
     RoomModule::class,
-    NetworkModule::class
+    NetworkModule::class,
+    WorkerModule::class
 ])
 interface ApplicationComponent {
 

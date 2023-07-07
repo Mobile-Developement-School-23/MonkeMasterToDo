@@ -50,10 +50,7 @@ class MainTodoActivity : AppCompatActivity() {
                     applicationContext,
                     uiState.message,
                     Toast.LENGTH_SHORT).show()
-                UiState.Loading -> Toast.makeText(
-                    applicationContext,
-                    "Простите. Анимации загрузки пока нет.",
-                    Toast.LENGTH_SHORT).show()
+                UiState.Loading -> {}
                 UiState.NeedSync -> showSyncDialog()
                 UiState.Success -> {}
             }

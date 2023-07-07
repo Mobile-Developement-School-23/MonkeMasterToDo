@@ -10,4 +10,9 @@ object Constants {
     const val CODE_NEED_SYNC = 0
     const val CODE_REPOSITORY_ERROR = 500
     const val CODE_NO_NETWORK = 1
+
+    const val SYNC_PERIOD = 8L
+    const val WORK_TAG = "Synchronization"
+    const val WORK_NAME = "Synchronization"
+
 }
