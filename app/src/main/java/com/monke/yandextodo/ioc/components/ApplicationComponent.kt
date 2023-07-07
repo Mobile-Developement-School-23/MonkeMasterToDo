@@ -21,6 +21,8 @@ interface ApplicationComponent {
 
     fun mainTodoActivityComponent(): MainTodoActivityComponent
 
+    fun inject(app: App)
+
     @Component.Builder
     interface Builder {
 

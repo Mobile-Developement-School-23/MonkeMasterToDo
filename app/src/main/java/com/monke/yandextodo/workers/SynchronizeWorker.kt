@@ -5,13 +5,17 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.monke.yandextodo.data.repository.TodoItemsRepository
 import com.monke.yandextodo.domain.Constants
+import dagger.assisted.AssistedInject
 import javax.inject.Inject
 
-class SynchronizeWorker @Inject constructor(
+class SynchronizeWorker (
     context: Context,
     params: WorkerParameters,
-    private val repository: TodoItemsRepository
+
 ): CoroutineWorker(context, params) {
+
+    @Inject
+    lateinit var repository: TodoItemsRepository
 
     override suspend fun doWork(): Result {
         val repositoryResponse = repository.synchronizeWithServer()
