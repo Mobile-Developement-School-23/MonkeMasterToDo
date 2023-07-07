@@ -57,4 +57,8 @@ class TodoItemCacheStorage private constructor() {
     suspend fun setTodoItemsList(list: ArrayList<TodoItem>) {
         todoItemsList.emit(list)
     }
+
+    fun clearTodoItemsList() {
+        todoItemsList.value.clear()
+    }
 }

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface RevisionDao {
 
     @Query("SELECT MAX(revision) from revisionRoom")
-    fun getLastRevision(): Int?
+    fun getLastRevision(): Flow<Int?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addRevision(vararg todoItems: RevisionRoom)

@@ -9,16 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
 import com.monke.yandextodo.App
 import com.monke.yandextodo.R
 import com.monke.yandextodo.databinding.FragmentTaskBinding
 import com.monke.yandextodo.domain.Importance
 import com.monke.yandextodo.domain.TodoItem
-import com.monke.yandextodo.viewModels.TodoItemViewModel
+import com.monke.yandextodo.presentationState.TodoItemViewModel
 import com.monke.yandextodo.utils.DateUtils
-import com.monke.yandextodo.viewModels.TodoItemViewModelFactory
+import com.monke.yandextodo.presentationState.TodoItemViewModelFactory
 import java.util.Calendar
 import javax.inject.Inject
 

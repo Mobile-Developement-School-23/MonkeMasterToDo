@@ -1,5 +1,6 @@
 package com.monke.yandextodo.ioc.modules
 
+import com.monke.yandextodo.data.networkService.callAdapter.CallAdapterFactory
 import com.monke.yandextodo.data.networkService.interceptors.TokenInterceptor
 import com.monke.yandextodo.domain.Constants
 import com.monke.yandextodo.ioc.scopes.AppScope
@@ -19,6 +20,7 @@ class NetworkModule {
         .client(okHttpClient)
         .baseUrl(Constants.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(CallAdapterFactory())
         .build()
 
     @AppScope

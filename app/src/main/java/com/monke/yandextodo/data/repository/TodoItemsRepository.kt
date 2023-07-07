@@ -1,14 +1,13 @@
 package com.monke.yandextodo.data.repository
 
-import android.util.Log
 import com.monke.yandextodo.data.cacheStorage.TodoItemCacheStorage
 import com.monke.yandextodo.data.converters.TodoItemConverters
 import com.monke.yandextodo.data.localStorage.databases.TodoItemsDatabase
 import com.monke.yandextodo.data.localStorage.roomModels.RevisionRoom
-import com.monke.yandextodo.data.networkService.pojo.ServiceResponse
 import com.monke.yandextodo.data.networkService.service.TodoItemService
-import com.monke.yandextodo.data.networkService.pojo.TodoItemContainer
+import com.monke.yandextodo.data.networkService.pojo.TodoItemElement
 import com.monke.yandextodo.data.networkService.pojo.TodoItemsList
+import com.monke.yandextodo.domain.Constants
 import com.monke.yandextodo.domain.TodoItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,34 +23,76 @@ class TodoItemsRepository @Inject constructor(
     private val todoItemService: TodoItemService
 ) {
 
-    suspend fun fetchData() {
+    suspend fun fetchData() : RepositoryResponse = withContext(Dispatchers.IO){
         // Пробуем получить данные с сервера
         val response = fetchDataFromServer()
         // Если данные были получены, сравниваем ревизии
         if (response.statusCode == 200) {
+            val rev = todoItemsDatabase.revisionDao().getLastRevision().first()
             // Если на устройстве нет ревизии, загружаем данные с сервера в локальное хранилище
-            if (todoItemsDatabase.revisionDao().getLastRevision() == null)
+            if (rev == null) {
                 mergeFromServer()
-            // Если ревизии не равны, отправляем пользователю запрос с выбором источника данных
-            if (cacheStorage.getLastKnownRevision() != todoItemsDatabase.revisionDao().getLastRevision())
-                mergeFromServer()
-        } else
+            }
+            // Если данные с бд и сервера не равны, отправляем пользователю запрос с выбором источника данных
+            else if (!compareDatabaseAndServer(rev))
+                return@withContext RepositoryResponse(
+                    statusCode = Constants.CODE_NEED_SYNC,
+                    message = "Need sync")
+            return@withContext RepositoryResponse(
+                statusCode = Constants.CODE_REPOSITORY_SUCCESS,
+                message = "Success")
+        } else {
             // Если не получилось, загружаем данные с устройства и ждем появления интернета
             fetchDataFromDatabase()
 
-
-    }
-
-    private suspend fun fetchDataFromDatabase() {
-        val todoItemsRoom = todoItemsDatabase.todoItemDao().getTodoItemsList().collect {
-            cacheStorage.setTodoItemsList(
-                it.map { TodoItemConverters.roomToModel(it) } as ArrayList<TodoItem>)
+            return@withContext RepositoryResponse(
+                statusCode = Constants.CODE_NO_NETWORK,
+                message = "No network connection"
+            )
         }
 
     }
 
+    private suspend fun compareDatabaseAndServer(localRevision: Int) =
+        withContext(Dispatchers.IO) {
+            // Проверяем номера ревизий
+            if (cacheStorage.getLastKnownRevision() !=
+                localRevision)
+                return@withContext false
+
+            val localData = todoItemsDatabase.todoItemDao()
+                .getTodoItemsList().first().map { TodoItemConverters.roomToModel(it) }
+            val serverData = cacheStorage.getTodoItemsList().first()
+            val serverItemsByIdMap = serverData.associateBy { it.id }
+
+            // Проверяем размер списков
+            if (localData.size != serverData.size)
+                return@withContext false
+
+            // Проверяем наличие заданий с бд в списке сервера
+            // Если какого-то элемента нет, значит возвращаем false
+            // Если элемент есть, сравниваем его с элементом с сервера
+            for (todoItem in localData) {
+                if (serverItemsByIdMap[todoItem.id] == null)
+                    return@withContext false
+                else if (todoItem != serverItemsByIdMap[todoItem.id])
+                    return@withContext false
+            }
+            return@withContext true
+
+        }
+
+
+    private suspend fun fetchDataFromDatabase() {
+        withContext(Dispatchers.IO) {
+           val todoItemsList =  todoItemsDatabase.todoItemDao().getTodoItemsList().first()
+            cacheStorage.setTodoItemsList(
+                todoItemsList.map { TodoItemConverters.roomToModel(it) } as ArrayList<TodoItem>)
+        }
+    }
+
     // Мердж данных с сервера в локальную БД
-    private suspend fun mergeFromServer() {
+    suspend fun mergeFromServer() {
         // Получаем данные с локального хранилища
         withContext(Dispatchers.IO) {
             // Сравниваем данные с сервера и бд
@@ -72,157 +113,138 @@ class TodoItemsRepository @Inject constructor(
             }
 
             saveLastKnownRevisionToDatabase(cacheStorage.getLastKnownRevision())
-
-            
         }
     }
 
     // Мердж данных на сервер с локальной БД
-    private suspend fun mergeFromDatabase() = withContext(Dispatchers.IO) {
+    suspend fun mergeFromDatabase() = withContext(Dispatchers.IO) {
+        // Получение данных из локальной БД
         val localData = todoItemsDatabase.todoItemDao().getTodoItemsList().first()
             .map { TodoItemConverters.modelToPojo(TodoItemConverters.roomToModel(it)) }
 
         lateinit var repositoryResponse: RepositoryResponse
-        try {
-            val serviceResponse = todoItemService.getService().patchTodoItemsList(
-                cacheStorage.getLastKnownRevision(),
-                TodoItemsList(list = localData))
 
-            if (serviceResponse.isSuccessful && serviceResponse.body() != null) {
-                saveToCache(serviceResponse.body()?.list?.map {
-                    TodoItemConverters.modelFromPojo(it) })
-                saveLastKnownRevisionToDatabase(serviceResponse.body()!!.revision)
-                setLastKnownRevision(serviceResponse.body()!!.revision)
+        val list = TodoItemsList(list = localData)
 
-                repositoryResponse = RepositoryResponse(
-                    statusCode = 200,
-                    message = "Success")
-            } else
-                repositoryResponse = RepositoryResponse(
-                    statusCode = serviceResponse.code(),
-                    message = serviceResponse.message())
-        } catch (e : Exception) {
+        // Запрос к серверу на изменение списка задач
+        val serviceResult = todoItemService.getService().patchTodoItemsList(
+            cacheStorage.getLastKnownRevision(),
+            list)
+
+        // В случае успешного запроса
+        serviceResult.onSuccess {
+            val todoItemsList = it
+
+            // Сохраняем новый список задач в кэш
+            cacheStorage.clearTodoItemsList()
+            saveTodoItemsListToCache(todoItemsList.list.map {
+                    todoItem -> TodoItemConverters.modelFromPojo(todoItem)
+            })
+            // Сохраняем номер последней ревизии в БД и кэш
+            updateRevision(todoItemsList.revision)
+
+            repositoryResponse = RepositoryResponse(
+                statusCode = 200,
+                message = "Success")
+        }.onFailure {
+            // Получаем ошибку в случае неудачи
             repositoryResponse = RepositoryResponse(
                 statusCode = 500,
-                message = "Unknown error")
+                message = it.localizedMessage
+            )
         }
 
         repositoryResponse
-
     }
 
-    private suspend fun fetchDataFromServer() =
-        withContext(Dispatchers.IO) {
-            lateinit var response: RepositoryResponse
-            try {
-                val serviceResponse = todoItemService.getService().getTodoItemsList()
-                if (serviceResponse.isSuccessful) {
-                    var todoItemsList =
-                        serviceResponse.body()?.list?.map { TodoItemConverters.modelFromPojo(it) }
+    // Загрузка данных с сервера в кэш
+    private suspend fun fetchDataFromServer() = withContext(Dispatchers.IO) {
+        lateinit var response: RepositoryResponse
+        // Запрос к серверу на получение списка задач
+        val serviceResponse = todoItemService.getService().getTodoItemsList()
 
-                    saveToCache(todoItemsList)
+        // В случае успеха
+        serviceResponse.onSuccess {
+            val todoItemsList = it
+            // Сохраняем в кэш мапнутый список
+            saveTodoItemsListToCache(todoItemsList.list.map {
+                todoItem -> TodoItemConverters.modelFromPojo(todoItem)
+            })
+            // Сохраняем в кэш номер последней ревизии
+            setLastKnownRevision(it.revision)
 
-                    val revision = serviceResponse.body()?.revision
-                    if (revision != null) {
-                        setLastKnownRevision(revision)
-                    }
-                    response = RepositoryResponse(
-                        statusCode = 200,
-                        message = "Success"
-                    )
-                } else {
-                    response = RepositoryResponse(
-                        statusCode = serviceResponse.code(),
-                        message = serviceResponse.message()
-                    )
-                    Log.d(serviceResponse.message(), serviceResponse.code().toString())
-                }
-            } catch (exception: Exception) {
-                Log.d("Error", exception.message + " unit")
-                response = RepositoryResponse(
-                    statusCode = 500,
-                    message = "Unknown error")
-            }
-            response
+            response = RepositoryResponse(
+                statusCode = 200,
+                message = "Success"
+            )
+        }.onFailure {
+            // Получаем ошибку в случае неудачи
+            response = RepositoryResponse(
+                statusCode = 500,
+                message = it.localizedMessage
+            )
+        }
+
+        response
         }
 
     // Добавление задачи
     suspend fun addTodoItem(todoItem: TodoItem) = withContext(Dispatchers.IO) {
+        // Добавление задачи в кэш
         cacheStorage.addTodoItem(todoItem)
+        // Добавление задачи в БД
         todoItemsDatabase.todoItemDao().addTodoItems(TodoItemConverters.modelToRoom(todoItem))
+
         lateinit var response: RepositoryResponse
 
-        try {
-            val serviceResponse = todoItemService.getService().addTodoItem(
+        // Запрос к серверу на добавление задачи
+        val serviceResponse = todoItemService.getService().addTodoItem(
                 cacheStorage.getLastKnownRevision(),
-                TodoItemContainer(element = TodoItemConverters.modelToPojo(todoItem))
-            )
-            // Если запрос успешный
-            if (serviceResponse.isSuccessful) {
-                var lastKnownRevision = serviceResponse.body()?.revision
+                TodoItemElement(element = TodoItemConverters.modelToPojo(todoItem)))
+        // В случае успеха
+        serviceResponse.onSuccess {
+            // Обновляем номер ревизии
+            updateRevision(it.revision)
 
-                if (lastKnownRevision != null) {
-                    setLastKnownRevision(lastKnownRevision)
-                    saveLastKnownRevisionToDatabase(lastKnownRevision)
-                }
-                response = RepositoryResponse(
+            response = RepositoryResponse(
                     statusCode = 200,
-                    message = "Success"
-                )
-            } else {
-                // Обработка ошибок
-                response = RepositoryResponse(
-                    statusCode = serviceResponse.code(),
-                    message = serviceResponse.message(),
-                    body = serviceResponse.body()
-                )
-            }
-
-            response
-        } catch (e: Exception) {
-            Log.d("Error", e.message.toString())
+                    message = "Success")
+        }.onFailure {
+            // Получаем ошибку в случае неудачи
+            response = RepositoryResponse(
+                statusCode = 500,
+                message = it.localizedMessage)
         }
-
-
+        response
     }
 
-
     suspend fun deleteTodoItem(todoItem: TodoItem) = withContext(Dispatchers.IO) {
+        // Удаление задачи в кэше
         cacheStorage.deleteTodoItem(todoItem)
+        // Удаление задачи в БД
         todoItemsDatabase.todoItemDao().delete(TodoItemConverters.modelToRoom(todoItem))
 
-        // Удаление задачи на сервере
         lateinit var response: RepositoryResponse
-        try {
-            val serviceResponse = todoItemService.getService().deleteTodoItem(
+        // Запрос к серверу на удаление задачи
+        val serviceResponse = todoItemService.getService().deleteTodoItem(
                 todoItem.id,
                 cacheStorage.getLastKnownRevision())
-            // Если запрос успешный
-            if (serviceResponse.isSuccessful) {
-                var lastKnownRevision = serviceResponse.body()?.revision
 
-                if (lastKnownRevision != null) {
-                    setLastKnownRevision(lastKnownRevision)
-                    saveLastKnownRevisionToDatabase(lastKnownRevision)
-                }
-                response = RepositoryResponse(
-                    statusCode = 200,
-                    message = "Success"
-                )
-            } else {
-                // Обработка ошибок
-                response = RepositoryResponse(
-                    statusCode = serviceResponse.code(),
-                    message = serviceResponse.message(),
-                    body = serviceResponse.body()
-                )
-            }
-
-            response
-        } catch (e: Exception) {
-            Log.d("Error", e.message.toString())
+        // В случае успеха
+        serviceResponse.onSuccess {
+            // Обновляем ревизию
+            updateRevision(it.revision)
+            response = RepositoryResponse(
+                statusCode = 200,
+                message = "Success")
+        }.onFailure {
+            // Получаем ошибку в случае неудачи
+            response = RepositoryResponse(
+                statusCode = 500,
+                message = it.localizedMessage)
         }
 
+        response
     }
 
     fun getTodoItemsList(): MutableStateFlow<ArrayList<TodoItem>> {
@@ -234,45 +256,31 @@ class TodoItemsRepository @Inject constructor(
     }
 
     suspend fun setTodoItem(newItem: TodoItem) = withContext(Dispatchers.IO) {
+        lateinit var response: RepositoryResponse
+        // Обновление задачи в кэше
         cacheStorage.setTodoItem(newItem)
+        // Обновление задачи в БД
         todoItemsDatabase.todoItemDao().updateTodoItems(TodoItemConverters.modelToRoom(newItem))
 
-        lateinit var response: RepositoryResponse
-        lateinit var serviceResponse: retrofit2.Response<ServiceResponse>
-        try {
-            // Запрос на изменение задачи на сервере
-            val lastRevision = cacheStorage.getLastKnownRevision()
-            serviceResponse = todoItemService.getService().setTodoItem(
+        // Запрос к серверу на обновление задачи
+        val serviceResponse = todoItemService.getService().setTodoItem(
                 newItem.id,
-                lastRevision,
-                TodoItemContainer(element = TodoItemConverters.modelToPojo(newItem)))
-            // Если запрос успешный
-            if (serviceResponse.isSuccessful) {
-                var lastKnownRevision = serviceResponse.body()?.revision
+                cacheStorage.getLastKnownRevision(),
+                TodoItemElement(element = TodoItemConverters.modelToPojo(newItem)))
 
-                if (lastKnownRevision != null) {
-                    setLastKnownRevision(lastKnownRevision)
-                    saveLastKnownRevisionToDatabase(lastKnownRevision)
-                }
-                response = RepositoryResponse(
+        serviceResponse.onSuccess {
+            // Обновление ревизии в кэше и бд
+            updateRevision(it.revision)
+            response = RepositoryResponse(
                     statusCode = 200,
-                    message = "Success"
-                )
-            } else {
-                // Обработка ошибок
-                Log.d("Error", "${serviceResponse.code()} ${serviceResponse.body()}")
-                response = RepositoryResponse(
-                    statusCode = serviceResponse.code(),
-                    message = serviceResponse.message(),
-                    body = serviceResponse.body()
-                )
-            }
-
-            response
-        } catch (e: Exception) {
-            Log.d("Error", e.message.toString())
+                    message = "Success")
+        }.onFailure {
+            // Получаем ошибку в случае неудачи
+            response = RepositoryResponse(
+                statusCode = 500,
+                message = it.localizedMessage)
         }
-
+        response
     }
 
     private fun setLastKnownRevision(revision: Int) {
@@ -286,13 +294,38 @@ class TodoItemsRepository @Inject constructor(
                 revision))
     }
 
-    fun saveToCache(todoItemsList: List<TodoItem>?) {
+    private fun saveTodoItemsListToCache(todoItemsList: List<TodoItem>?) {
         if (todoItemsList != null) {
             for (todoItem in todoItemsList) {
                 cacheStorage.addTodoItem(todoItem)
             }
         }
     }
+
+    private fun updateRevision(newRevision: Int) {
+        setLastKnownRevision(newRevision)
+        saveLastKnownRevisionToDatabase(newRevision)
+    }
+
+    suspend fun synchronizeWithServer() : RepositoryResponse {
+        var response = fetchDataFromServer()
+        if (response.statusCode != Constants.CODE_REPOSITORY_SUCCESS)
+            return response
+
+        var lastKnownRevision = withContext(Dispatchers.IO) {
+            todoItemsDatabase.revisionDao().getLastRevision().first()
+        }
+
+        if (lastKnownRevision == null || !compareDatabaseAndServer(lastKnownRevision)) {
+            mergeFromServer()
+        }
+
+        return RepositoryResponse(
+            statusCode = 200,
+            message = "Success"
+        )
+    }
+
 
 
 }

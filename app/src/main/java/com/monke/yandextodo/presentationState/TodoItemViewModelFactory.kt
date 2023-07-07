@@ -1,9 +1,8 @@
-package com.monke.yandextodo.viewModels
+package com.monke.yandextodo.presentationState
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.monke.yandextodo.data.repository.TodoItemsRepository
-import com.monke.yandextodo.ioc.scopes.MainTodoActivityScope
 import javax.inject.Inject
 
 class TodoItemViewModelFactory @Inject constructor(

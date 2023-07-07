@@ -13,4 +13,6 @@ interface MainTodoActivityComponent {
     fun todoItemFragmentComponent(): TodoItemFragmentComponent
 
     fun todoItemListFragmentComponent(): TodoItemsListFragmentComponent
+
+    fun synchronizationComponent(): SynchronizationDialogComponent
 }

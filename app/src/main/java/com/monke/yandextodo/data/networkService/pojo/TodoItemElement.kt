@@ -1,5 +1,5 @@
 package com.monke.yandextodo.data.networkService.pojo
 
-data class TodoItemContainer (
+data class TodoItemElement (
     var element: TodoItemPojo
 )

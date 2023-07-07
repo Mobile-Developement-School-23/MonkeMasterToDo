@@ -1,38 +1,36 @@
 package com.monke.yandextodo.data.networkService.api
 
-import com.monke.yandextodo.data.networkService.pojo.ServiceResponse
-import com.monke.yandextodo.data.networkService.pojo.TodoItemContainer
+import com.monke.yandextodo.data.networkService.pojo.TodoItemsContainer
+import com.monke.yandextodo.data.networkService.pojo.TodoItemElement
 import com.monke.yandextodo.data.networkService.pojo.TodoItemsList
-import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.*
 
 interface TodoItemApi {
     @GET("list")
-    suspend fun getTodoItemsList(): Response<ServiceResponse>
+    suspend fun getTodoItemsList(): Result<TodoItemsContainer>
 
     @POST("list")
     suspend fun addTodoItem(
         @Header("X-Last-Known-Revision") lastKnownRevision: Int,
-        @Body todoItem: TodoItemContainer
-    ): Response<ServiceResponse>
+        @Body todoItem: TodoItemElement
+    ): Result<TodoItemsContainer>
 
     @PUT("list/{todoId}")
     suspend fun setTodoItem(
         @Path("todoId") todoId: String,
         @Header("X-Last-Known-Revision") lastKnownRevision: Int,
-        @Body todoItem: TodoItemContainer
-    ): Response<ServiceResponse>
+        @Body todoItem: TodoItemElement
+    ): Result<TodoItemsContainer>
 
     @DELETE("list/{todoId}")
     suspend fun deleteTodoItem(
         @Path("todoId") todoId: String,
         @Header("X-Last-Known-Revision") lastKnownRevision: Int
-    ): Response<ServiceResponse>
+    ): Result<TodoItemsContainer>
 
     @PATCH("list")
     suspend fun patchTodoItemsList(
         @Header("X-Last-Known-Revision") lastKnownRevision: Int,
         @Body todoItem: TodoItemsList
-    ): Response<ServiceResponse>
+    ): Result<TodoItemsContainer>
 }

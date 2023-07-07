@@ -3,67 +3,22 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tasks_title">Мои дела</string>
-
-    <string name="lorem_ipsum">Sed ut perspiciatis, unde omnis iste natus error sit voluptatem
-        accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo
-        inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam
-        voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores
-        eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia
-        dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt,
-        ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
-        exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?
-        Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae
-        consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? At vero eos et
-        accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti
-        atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non
-        provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et
-        dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore,
-        cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat,
-        facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem
-        quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates
-        repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente
-        delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus
-        asperiores repellat. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem
-        accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore
-        veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem,
-        quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos,
-        qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor
-        sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut
-        labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
-        exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?
-        Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae
-        consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? At vero eos et
-        accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti
-        atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non
-        provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et
-        dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore,
-        cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat,
-        facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem
-        quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates
-        repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente
-        delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus
-        asperiores repellat.</string>
     <string name="completed_title">Выполнено 5 заданий</string>
     <string name="save">Сохранить</string>
     <string name="task_hint">Что надо сделать...</string>
     <string name="importance">Важность</string>
     <string name="deadline">Сделать до</string>
     <string name="delete">Удалить</string>
+    <string name="merge_from_server">Загрузить с сервера</string>
+    <string name="merge_from_database">Загрузить на сервер</string>
+    <string name="sync_error">Ой-ой! Кажется, данные с сервера и с этого устройства немного различаются. Как нам поступить?</string>
 
     <string-array name="importance_array">
         <item>Нет</item>
         <item>Низкий</item>
         <item>Высокий</item>
-
     </string-array>
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome!"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+
+
 
 </resources>
