@@ -1,14 +1,16 @@
 package com.monke.yandextodo.data.cacheStorage
 
 import com.monke.yandextodo.domain.TodoItem
-import com.monke.yandextodo.domain.TodoItemList
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.collections.ArrayList
 
 // Хранение данных задачи в кэше
 // реализует паттерн singletone
 class TodoItemCacheStorage private constructor() {
 
-    private var todoItemsList = TodoItemList(0, ArrayList())
+    private var lastKnownRevision: Int = 0
+    private var todoItemsList = MutableStateFlow<ArrayList<TodoItem>>(ArrayList())
 
     companion object {
 
@@ -23,36 +25,36 @@ class TodoItemCacheStorage private constructor() {
     }
 
     fun setRevision(revision: Int) {
-        todoItemsList.lastKnownRevision = revision
+        lastKnownRevision = revision
     }
 
-    fun getLastKnownRevision() = todoItemsList.lastKnownRevision
+    fun getLastKnownRevision() = lastKnownRevision
 
     fun addTodoItem(todoItem: TodoItem) {
-        todoItemsList.todoItemsList.add(todoItem)
-    }
-
-    fun addAll(todoItem: List<TodoItem>) {
-        todoItemsList.todoItemsList.addAll(todoItem)
+        todoItemsList.value.add(todoItem)
     }
 
     fun deleteTodoItem(todoItem: TodoItem) {
-        todoItemsList.todoItemsList.remove(todoItem)
+        todoItemsList.value.remove(todoItem)
     }
 
-    fun getTodoItemsList(): ArrayList<TodoItem> {
-        return todoItemsList.todoItemsList
+    fun getTodoItemsList(): MutableStateFlow<ArrayList<TodoItem>> {
+        return todoItemsList
     }
 
     fun getTodoItemById(id: String): TodoItem? {
-        return todoItemsList.todoItemsList.find { it.id == id }
+        return todoItemsList.value.find { it.id == id }
     }
 
     fun setTodoItem(newItem: TodoItem) {
-        for (i in todoItemsList.todoItemsList.indices) {
-            if (todoItemsList.todoItemsList[i].id == newItem.id) {
-                todoItemsList.todoItemsList[i] = newItem
+        for (i in todoItemsList.value.indices) {
+            if (todoItemsList.value[i].id == newItem.id) {
+                todoItemsList.value[i] = newItem
             }
         }
+    }
+
+    suspend fun setTodoItemsList(list: ArrayList<TodoItem>) {
+        todoItemsList.emit(list)
     }
 }

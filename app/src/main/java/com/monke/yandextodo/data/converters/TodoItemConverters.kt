@@ -1,6 +1,5 @@
 package com.monke.yandextodo.data.converters
 
-import androidx.room.TypeConverter
 import com.monke.yandextodo.data.localStorage.roomModels.TodoItemRoom
 import com.monke.yandextodo.data.networkService.pojo.TodoItemPojo
 import com.monke.yandextodo.domain.Importance
@@ -61,7 +60,7 @@ object TodoItemConverters {
         return Importance.HIGH
     }
 
-    fun todoItemToPojo(todoItem: TodoItem): TodoItemPojo {
+    fun modelToPojo(todoItem: TodoItem): TodoItemPojo {
         return TodoItemPojo(
             id = todoItem.id,
             text = todoItem.text,
@@ -75,7 +74,7 @@ object TodoItemConverters {
         )
     }
 
-    fun todoItemFromPojo(todoItemPojo: TodoItemPojo): TodoItem {
+    fun modelFromPojo(todoItemPojo: TodoItemPojo): TodoItem {
         return TodoItem(
             id = todoItemPojo.id,
             text = todoItemPojo.text,

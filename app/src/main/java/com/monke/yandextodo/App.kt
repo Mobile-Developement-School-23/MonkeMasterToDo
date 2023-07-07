@@ -15,20 +15,9 @@ class App: Application() {
     var applicationComponent = DaggerApplicationComponent.builder().application(this).build()
         private set
 
-    @Inject
-    lateinit var todoItemsRepository: TodoItemsRepository
 
     override fun onCreate() {
         super.onCreate()
-
-        applicationComponent.inject(this)
-
-        // Загрузка данных в кэш
-        CoroutineScope(Dispatchers.IO).launch {
-            todoItemsRepository.fetchData()
-        }
-
-
     }
 
 }

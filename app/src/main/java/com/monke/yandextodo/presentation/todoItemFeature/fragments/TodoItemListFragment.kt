@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.monke.yandextodo.App
 import com.monke.yandextodo.R
@@ -17,6 +18,7 @@ import com.monke.yandextodo.domain.TodoItem
 import com.monke.yandextodo.presentation.todoItemFeature.adapters.TodoItemAdapter
 import com.monke.yandextodo.viewModels.TodoItemViewModel
 import com.monke.yandextodo.viewModels.TodoItemViewModelFactory
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 // Фрагмент со списком задач
@@ -92,11 +94,16 @@ class TodoItemListFragment : Fragment() {
             false)
 
         // Подписывается на изменение списка задач
-        viewModel.tasksList.observe(viewLifecycleOwner) {
-            val value = viewModel.tasksList.value
-            if (value != null)
-                adapter.todoItemList = value
+        lifecycleScope.launch {
+            viewModel._tasksList.collect {
+                adapter.todoItemList = it
+            }
         }
+//        viewModel.tasksList.observe(viewLifecycleOwner) {
+//            val value = viewModel.tasksList.value
+//            if (value != null)
+//                adapter.todoItemList = value
+//        }
 
 
     }

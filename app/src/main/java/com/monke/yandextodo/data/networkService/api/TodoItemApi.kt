@@ -2,6 +2,7 @@ package com.monke.yandextodo.data.networkService.api
 
 import com.monke.yandextodo.data.networkService.pojo.ServiceResponse
 import com.monke.yandextodo.data.networkService.pojo.TodoItemContainer
+import com.monke.yandextodo.data.networkService.pojo.TodoItemsList
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
@@ -27,5 +28,11 @@ interface TodoItemApi {
     suspend fun deleteTodoItem(
         @Path("todoId") todoId: String,
         @Header("X-Last-Known-Revision") lastKnownRevision: Int
+    ): Response<ServiceResponse>
+
+    @PATCH("list")
+    suspend fun patchTodoItemsList(
+        @Header("X-Last-Known-Revision") lastKnownRevision: Int,
+        @Body todoItem: TodoItemsList
     ): Response<ServiceResponse>
 }

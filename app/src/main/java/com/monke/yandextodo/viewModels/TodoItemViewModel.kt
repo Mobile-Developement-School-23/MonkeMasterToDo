@@ -1,6 +1,5 @@
 package com.monke.yandextodo.viewModels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +9,8 @@ import com.monke.yandextodo.domain.Importance
 import com.monke.yandextodo.domain.TodoItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -20,15 +21,16 @@ class TodoItemViewModel @Inject constructor(
     private val todoItemsRepository: TodoItemsRepository
 ) : ViewModel() {
 
-    private val _tasksList = MutableLiveData(ArrayList<TodoItem>())
-    val tasksList: LiveData<ArrayList<TodoItem>> = _tasksList
+//    private val _tasksList = MutableLiveData(ArrayList<TodoItem>())
+//    val tasksList: LiveData<ArrayList<TodoItem>> = _tasksList
+
+    val _tasksList = todoItemsRepository.getTodoItemsList()
+    //val tasksList: StateFlow<ArrayList<TodoItem>> = _tasksList
 
     val errorMessage = MutableLiveData<String>()
 
     init {
-        viewModelScope.launch {
-            _tasksList.value = todoItemsRepository.getTodoItemsList()
-        }
+        viewModelScope.launch { todoItemsRepository.fetchData() }
 
     }
 
