@@ -12,6 +12,9 @@
     <string name="merge_from_server">Загрузить с сервера</string>
     <string name="merge_from_database">Загрузить на сервер</string>
     <string name="sync_error">Ой-ой! Кажется, данные с сервера и с этого устройства немного различаются. Как нам поступить?</string>
+    <string name="main_notif_channel">Напоминания</string>
+    <string name="main_notif_channel_description">Напоминания о задачах</string>
+    <string name="notification_title">Кажется, пора делать дела!</string>
 
     <string-array name="importance_array">
         <item>Нет</item>

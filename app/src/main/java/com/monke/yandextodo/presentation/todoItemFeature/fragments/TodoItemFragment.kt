@@ -145,7 +145,7 @@ class TodoItemFragment: Fragment() {
             if (isChecked) {
                 // Создание диалога с выбором даты
                 val picker = DatePickerDialog(
-                    context!!, { datePicker, year, month, day ->
+                    requireContext(), { datePicker, year, month, day ->
                         // Форматирует и отображает дату после выбора
                         binding?.deadlineTxt?.visibility = View.VISIBLE
                         binding?.deadlineTxt?.text = DateUtils.formatDate(
@@ -168,9 +168,9 @@ class TodoItemFragment: Fragment() {
                 // Отображение диалога
                 picker.show()
                 picker.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(
-                    context!!.getColor(R.color.red))
+                    requireContext().getColor(R.color.red))
                 picker.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(
-                    context!!.getColor(R.color.blue))
+                    requireContext().getColor(R.color.blue))
             }
             else {
                 // Если пользователь отменил выбор даты дедлайна

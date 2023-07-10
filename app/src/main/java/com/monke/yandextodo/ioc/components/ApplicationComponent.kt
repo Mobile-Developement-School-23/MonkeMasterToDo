@@ -4,6 +4,7 @@ import android.app.Application
 import com.monke.yandextodo.App
 import com.monke.yandextodo.ioc.modules.CacheStorageModule
 import com.monke.yandextodo.ioc.modules.NetworkModule
+import com.monke.yandextodo.ioc.modules.NotificatorModule
 import com.monke.yandextodo.ioc.modules.RoomModule
 import com.monke.yandextodo.ioc.modules.WorkerModule
 import com.monke.yandextodo.ioc.scopes.AppScope
@@ -17,7 +18,8 @@ import dagger.Component
     CacheStorageModule::class,
     RoomModule::class,
     NetworkModule::class,
-    WorkerModule::class
+    WorkerModule::class,
+    NotificatorModule::class
 ])
 interface ApplicationComponent {
 

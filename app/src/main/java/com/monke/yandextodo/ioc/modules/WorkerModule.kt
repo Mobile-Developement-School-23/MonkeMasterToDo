@@ -1,7 +1,7 @@
 package com.monke.yandextodo.ioc.modules
 
-import com.monke.yandextodo.workers.ChildWorkerFactory
-import com.monke.yandextodo.workers.SynchronizeWorker
+import com.monke.yandextodo.utils.workers.ChildWorkerFactory
+import com.monke.yandextodo.utils.workers.SynchronizeWorker
 import dagger.Binds
 import dagger.Module
 

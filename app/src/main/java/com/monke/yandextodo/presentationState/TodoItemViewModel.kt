@@ -1,5 +1,6 @@
 package com.monke.yandextodo.presentationState
 
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,11 +19,7 @@ class TodoItemViewModel @Inject constructor(
     private val todoItemsRepository: TodoItemsRepository
 ) : ViewModel() {
 
-//    private val _tasksList = MutableLiveData(ArrayList<TodoItem>())
-//    val tasksList: LiveData<ArrayList<TodoItem>> = _tasksList
-
     val _tasksList = todoItemsRepository.getTodoItemsList()
-    //val tasksList: StateFlow<ArrayList<TodoItem>> = _tasksList
 
     private val _uiState = MutableLiveData<UiState>()
     var uiState: LiveData<UiState> = _uiState
@@ -74,6 +71,7 @@ class TodoItemViewModel @Inject constructor(
             val response = todoItemsRepository.addTodoItem(todoItem)
             if (response.statusCode != 200)
                 errorMessage.value = response.message
+
         }
     }
 

@@ -1,12 +1,17 @@
 package com.monke.yandextodo.presentation
 
+import android.Manifest
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.monke.yandextodo.App
 import com.monke.yandextodo.R
 import com.monke.yandextodo.presentation.todoItemFeature.dialogs.SynchronizationDialog
@@ -14,6 +19,8 @@ import com.monke.yandextodo.presentation.todoItemFeature.fragments.TodoItemListF
 import com.monke.yandextodo.presentationState.TodoItemViewModel
 import com.monke.yandextodo.presentationState.TodoItemViewModelFactory
 import com.monke.yandextodo.presentationState.UiState
+import com.monke.yandextodo.utils.workers.NotificationWorker
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -54,8 +61,13 @@ class MainTodoActivity : AppCompatActivity() {
                 UiState.NeedSync -> showSyncDialog()
                 UiState.Success -> {}
             }
-
         }
+
+        ActivityCompat.requestPermissions(this,
+            arrayOf(Manifest.permission.POST_NOTIFICATIONS), 200)
+
+        val helpMe = OneTimeWorkRequestBuilder<NotificationWorker>().setInitialDelay(1, TimeUnit.MINUTES).build()
+        WorkManager.getInstance(this).enqueue(helpMe)
 
     }
 
