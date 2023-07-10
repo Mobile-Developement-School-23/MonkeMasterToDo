@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.monke.yandextodo.App
 import com.monke.yandextodo.R
@@ -16,6 +15,7 @@ import com.monke.yandextodo.presentation.todoItemFeature.adapters.TodoItemAdapte
 import com.monke.yandextodo.presentation.todoItemFeature.viewModels.TodoItemViewModel
 import javax.inject.Inject
 
+// Фрагмент со списком задач
 class TodoItemListFragment : Fragment() {
 
     @Inject
@@ -53,7 +53,9 @@ class TodoItemListFragment : Fragment() {
     // Настройка RecyclerView для списка задач
     private fun configureTasksListAdapter() {
         val tasksRecycler = binding?.tasksRecycler
+        // Настройка адаптера
         val adapter = TodoItemAdapter(object : TodoItemAdapter.TodoItemClickListener {
+            // Callback для нажатия на item
             override fun onItemClick(todoItem: TodoItem) {
                 parentFragmentManager.beginTransaction().replace(
                     R.id.fragmentContainerView,
@@ -61,6 +63,7 @@ class TodoItemListFragment : Fragment() {
                 addToBackStack("").commit()
             }
 
+            // Callback для нажатия на checkbox
             override fun onCheckboxClick(todoItem: TodoItem, onChecked: Boolean) {
                 if (todoItem.completed != onChecked) {
                     todoItem.completed = onChecked
@@ -69,18 +72,24 @@ class TodoItemListFragment : Fragment() {
 
             }
         })
-        viewModel.tasksList.observe(viewLifecycleOwner) {
-            val value = viewModel.tasksList.value
-            if (value != null)
-                adapter.todoItemList = value
-        }
+
         tasksRecycler?.adapter = adapter
         tasksRecycler?.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.VERTICAL,
             false)
+
+        // Подписывается на изменение списка задач
+        viewModel.tasksList.observe(viewLifecycleOwner) {
+            val value = viewModel.tasksList.value
+            if (value != null)
+                adapter.todoItemList = value
+        }
+
+
     }
 
+    // Настройка кнопки добавления задачи
     private fun configureAddTaskBtn() {
         // Кнопка добавления задачи
         val addTaskButton = binding?.addTaskBtn
