@@ -37,8 +37,8 @@ class Notificator (
         }
     }
 
-    // Добавление уведомления
-    fun addNotification(text: String, title: String, notificationId: Int) {
+    // Показывает уведомление
+    fun showNotification(text: String, title: String, notificationId: Int) {
         var builder = NotificationCompat.Builder(context, MAIN_CHANNEL_ID)
             .setSmallIcon(R.drawable.icon)
             .setContentTitle(title)

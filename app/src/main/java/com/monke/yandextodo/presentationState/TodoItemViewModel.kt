@@ -45,6 +45,8 @@ class TodoItemViewModel (
             val response = todoItemsRepository.deleteTodoItem(todoItem)
             if (response.statusCode != 200)
                 errorMessage.value = response.message
+
+            notificationScheduler.cancelTodoNotification(todoItem.id)
         }
     }
 
@@ -82,12 +84,17 @@ class TodoItemViewModel (
         }
     }
 
+    // Загрузка данных с сервера
     fun mergeDataFromServer() {
         viewModelScope.launch {
             todoItemsRepository.mergeFromServer()
+
+            // Добавление отложенных уведомлений для загруженных задач
+            scheduleNotifications()
         }
     }
 
+    // Загрузка данных с локального хранилища
     fun mergeDataFromDatabase() {
         viewModelScope.launch {
             val result = todoItemsRepository.mergeFromDatabase()
@@ -104,6 +111,14 @@ class TodoItemViewModel (
             Constants.CODE_REPOSITORY_SUCCESS -> _uiState.value = UiState.Success
         }
     }
+
+    private fun scheduleNotifications() {
+        for (todoItem in _tasksList.value) {
+            if (todoItem.deadlineDate != null)
+                notificationScheduler.scheduleTodoNotification(todoItem)
+        }
+    }
+
 
 
 }
