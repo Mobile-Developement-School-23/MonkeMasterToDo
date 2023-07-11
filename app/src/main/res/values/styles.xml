@@ -29,25 +29,8 @@
     </style>
 
 
-    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorOnPrimary">@color/blue</item>
-        <item name="android:textColorPrimary">@color/black</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:colorBackground">@color/primary</item>
-        <item name="android:colorPrimaryDark">@color/gray_light</item>
-        <item name="colorControlActivated">@color/blue</item>
-        <item name="colorSecondary">@color/blue</item>
-        <item name="colorAccent">@color/blue</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
     <style name="SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
-        <item name="android:color">@color/primary</item>
+        <item name="android:color">@color/backPrimary</item>
         <item name="cornerFamily">cut</item>
         <item name="cornerSize">@dimen/rounding_radius</item>
 
@@ -59,8 +42,8 @@
     </style>
 
     <style name="AlertDialogStyle" parent="Theme.MaterialComponents.Dialog">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:background">@color/primary</item>
+        <item name="android:textColor">@color/labelPrimary</item>
+        <item name="android:background">@color/backPrimary</item>
     </style>
 
 
