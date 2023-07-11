@@ -13,7 +13,8 @@ import com.monke.yandextodo.R
 
 // Класс для управления уведомлениями
 class Notificator (
-    val context: Context) {
+    val context: Context
+    ) {
 
     private var notificationManager: NotificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -24,7 +25,7 @@ class Notificator (
     }
 
     // Регистрация каналов
-    fun registerChannels() {
+    private fun registerChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = context.getString(R.string.main_notif_channel)
             val description = context.getString(R.string.main_notif_channel_description)
@@ -37,10 +38,10 @@ class Notificator (
     }
 
     // Добавление уведомления
-    fun addNotification(text: String, notificationId: Int) {
+    fun addNotification(text: String, title: String, notificationId: Int) {
         var builder = NotificationCompat.Builder(context, MAIN_CHANNEL_ID)
             .setSmallIcon(R.drawable.icon)
-            .setContentTitle(context.getString(R.string.notification_title))
+            .setContentTitle(title)
             .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
@@ -53,11 +54,5 @@ class Notificator (
             notify(notificationId, builder.build())
         }
     }
-
-    // Удаление уведомления по id
-    fun removeNotification(notificationId: String) {
-
-    }
-
 
 }

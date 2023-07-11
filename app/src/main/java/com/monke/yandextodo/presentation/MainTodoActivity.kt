@@ -1,25 +1,27 @@
 package com.monke.yandextodo.presentation
 
 import android.Manifest
-import android.content.DialogInterface
+import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.work.Configuration
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.monke.yandextodo.App
 import com.monke.yandextodo.R
+import com.monke.yandextodo.domain.Importance
+import com.monke.yandextodo.domain.TodoItem
 import com.monke.yandextodo.presentation.todoItemFeature.dialogs.SynchronizationDialog
 import com.monke.yandextodo.presentation.todoItemFeature.fragments.TodoItemListFragment
 import com.monke.yandextodo.presentationState.TodoItemViewModel
 import com.monke.yandextodo.presentationState.TodoItemViewModelFactory
 import com.monke.yandextodo.presentationState.UiState
-import com.monke.yandextodo.utils.workers.NotificationWorker
+import com.monke.yandextodo.utils.workers.notificationFeature.NotificationWorker
+import java.util.Calendar
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -51,7 +53,6 @@ class MainTodoActivity : AppCompatActivity() {
         }
 
         viewModel.uiState.observe(this) { uiState ->
-
             when (uiState) {
                 is UiState.Error -> Toast.makeText(
                     applicationContext,
@@ -63,11 +64,16 @@ class MainTodoActivity : AppCompatActivity() {
             }
         }
 
-        ActivityCompat.requestPermissions(this,
-            arrayOf(Manifest.permission.POST_NOTIFICATIONS), 200)
+        // Запрашивает разрешение на отправку уведомлений
+        // если уровень API >= 33
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS), 200
+            )
+        }
 
-        val helpMe = OneTimeWorkRequestBuilder<NotificationWorker>().setInitialDelay(1, TimeUnit.MINUTES).build()
-        WorkManager.getInstance(this).enqueue(helpMe)
+
 
     }
 

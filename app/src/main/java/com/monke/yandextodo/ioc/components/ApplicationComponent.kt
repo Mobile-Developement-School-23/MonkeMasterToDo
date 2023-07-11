@@ -6,9 +6,7 @@ import com.monke.yandextodo.ioc.modules.CacheStorageModule
 import com.monke.yandextodo.ioc.modules.NetworkModule
 import com.monke.yandextodo.ioc.modules.NotificatorModule
 import com.monke.yandextodo.ioc.modules.RoomModule
-import com.monke.yandextodo.ioc.modules.WorkerModule
 import com.monke.yandextodo.ioc.scopes.AppScope
-import com.monke.yandextodo.presentation.MainTodoActivity
 import dagger.BindsInstance
 import dagger.Component
 
@@ -18,7 +16,6 @@ import dagger.Component
     CacheStorageModule::class,
     RoomModule::class,
     NetworkModule::class,
-    WorkerModule::class,
     NotificatorModule::class
 ])
 interface ApplicationComponent {

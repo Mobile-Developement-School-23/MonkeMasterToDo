@@ -1,6 +1,5 @@
 package com.monke.yandextodo.presentationState
 
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,13 +9,14 @@ import com.monke.yandextodo.data.repository.TodoItemsRepository
 import com.monke.yandextodo.domain.Constants
 import com.monke.yandextodo.domain.Importance
 import com.monke.yandextodo.domain.TodoItem
+import com.monke.yandextodo.utils.notifications.NotificationScheduler
 import kotlinx.coroutines.launch
 import java.util.*
-import javax.inject.Inject
 
 // View-model для фрагментов с заданиями
-class TodoItemViewModel @Inject constructor(
-    private val todoItemsRepository: TodoItemsRepository
+class TodoItemViewModel (
+    private val todoItemsRepository: TodoItemsRepository,
+    private val notificationScheduler: NotificationScheduler
 ) : ViewModel() {
 
     val _tasksList = todoItemsRepository.getTodoItemsList()
@@ -54,6 +54,10 @@ class TodoItemViewModel @Inject constructor(
             val response = todoItemsRepository.setTodoItem(newTodoItem)
             if (response.statusCode != 200)
                 errorMessage.value = response.message
+
+            notificationScheduler.cancelTodoNotification(newTodoItem.id)
+            if (newTodoItem.deadlineDate != null)
+                notificationScheduler.scheduleTodoNotification(newTodoItem)
         }
     }
 
@@ -71,6 +75,9 @@ class TodoItemViewModel @Inject constructor(
             val response = todoItemsRepository.addTodoItem(todoItem)
             if (response.statusCode != 200)
                 errorMessage.value = response.message
+
+            if (todoItem.deadlineDate != null)
+                notificationScheduler.scheduleTodoNotification(todoItem)
 
         }
     }
