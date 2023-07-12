@@ -42,7 +42,7 @@ class MainTodoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_todo)
 
-        supportFragmentManager.beginTransaction().add(
+        supportFragmentManager.beginTransaction().replace(
             R.id.fragmentContainerView,
             TodoItemListFragment()
         ).commit()

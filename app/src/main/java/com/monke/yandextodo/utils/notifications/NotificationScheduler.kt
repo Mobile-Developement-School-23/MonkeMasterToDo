@@ -18,6 +18,12 @@ class NotificationScheduler (
     private val context: Context
 ) {
 
+    companion object {
+        const val TEXT_KEY = "notification text"
+        const val ID_KEY = "notification id"
+        const val TITLE_KEY = "notification title"
+    }
+
     // Откладывает уведомление о задаче на время дедлайна
     fun scheduleTodoNotification(todoItem: TodoItem) {
         val timeDiff = todoItem.deadlineDate?.timeInMillis?.minus(
@@ -35,9 +41,9 @@ class NotificationScheduler (
 
         // Данные для уведомления
         val data = Data.Builder()
-        data.putString(NotificationHelper.TEXT_KEY, todoItem.text)
-        data.putInt(NotificationHelper.ID_KEY, todoItem.id.hashCode())
-        data.putString(NotificationHelper.TITLE_KEY, title)
+        data.putString(TEXT_KEY, todoItem.text)
+        data.putInt(ID_KEY, todoItem.id.hashCode())
+        data.putString(TITLE_KEY, title)
 
         val notificationWork = OneTimeWorkRequestBuilder<NotificationWorker>()
             .setInitialDelay(20, TimeUnit.SECONDS)

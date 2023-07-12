@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.monke.yandextodo.R
-import com.monke.yandextodo.utils.notifications.NotificationHelper
+import com.monke.yandextodo.utils.notifications.NotificationScheduler
 import com.monke.yandextodo.utils.notifications.Notificator
 
 // Worker для отправки уведомлений
@@ -17,9 +17,9 @@ class NotificationWorker(
     override fun doWork(): Result {
 
         // Извлечение данных
-        var notificationText = inputData.getString(NotificationHelper.TEXT_KEY)
-        val notificationId = inputData.getInt(NotificationHelper.ID_KEY, 0)
-        var notificationTitle = inputData.getString(NotificationHelper.TITLE_KEY)
+        var notificationText = inputData.getString(NotificationScheduler.TEXT_KEY)
+        val notificationId = inputData.getInt(NotificationScheduler.ID_KEY, 0)
+        var notificationTitle = inputData.getString(NotificationScheduler.TITLE_KEY)
 
         if (notificationText == null)
             notificationText = ""

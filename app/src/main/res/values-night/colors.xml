@@ -4,7 +4,7 @@
     <color name="overlay">#52000000</color>
 
     <color name="labelPrimary">#FFFFFF</color>
-    <color name="secondaryLabel">#99FFFFFF</color>
+    <color name="labelSecondary">#99FFFFFF</color>
     <color name="tertiary">#66FFFFFF</color>
     <color name="disable">#26FFFFFF</color>
 
