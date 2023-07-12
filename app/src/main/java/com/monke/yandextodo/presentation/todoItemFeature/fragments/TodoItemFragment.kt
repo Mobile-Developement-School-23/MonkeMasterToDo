@@ -36,15 +36,7 @@ class TodoItemFragment: Fragment() {
 
     companion object {
 
-        private const val ID_KEY = "id"
-
-        fun newInstance(todoId: String? = null): TodoItemFragment =
-            TodoItemFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ID_KEY, todoId)
-                }
-            }
-
+        const val ID_KEY = "todoItemId"
     }
 
     override fun onAttach(context: Context) {

@@ -7,22 +7,12 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.work.Configuration
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.monke.yandextodo.App
 import com.monke.yandextodo.R
-import com.monke.yandextodo.domain.Importance
-import com.monke.yandextodo.domain.TodoItem
 import com.monke.yandextodo.presentation.todoItemFeature.dialogs.SynchronizationDialog
-import com.monke.yandextodo.presentation.todoItemFeature.fragments.TodoItemListFragment
 import com.monke.yandextodo.presentationState.TodoItemViewModel
 import com.monke.yandextodo.presentationState.TodoItemViewModelFactory
 import com.monke.yandextodo.presentationState.UiState
-import com.monke.yandextodo.utils.workers.notificationFeature.NotificationWorker
-import java.util.Calendar
-import java.util.UUID
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -41,11 +31,6 @@ class MainTodoActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_todo)
-
-        supportFragmentManager.beginTransaction().replace(
-            R.id.fragmentContainerView,
-            TodoItemListFragment()
-        ).commit()
 
         viewModel.errorMessage.observe(this) { errorMessage ->
             if (errorMessage != null)

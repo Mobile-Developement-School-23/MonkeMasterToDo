@@ -7,8 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.monke.yandextodo.App
 import com.monke.yandextodo.R
@@ -70,10 +73,9 @@ class TodoItemListFragment : Fragment() {
         val adapter = TodoItemAdapter(object : TodoItemAdapter.TodoItemClickListener {
             // Callback для нажатия на item
             override fun onItemClick(todoItem: TodoItem) {
-                parentFragmentManager.beginTransaction().replace(
-                    R.id.fragmentContainerView,
-                    TodoItemFragment.newInstance(todoItem.id)).
-                addToBackStack("").commit()
+                findNavController().navigate(
+                    R.id.from_list_to_item,
+                    bundleOf(TodoItemFragment.ID_KEY to todoItem.id))
             }
 
             // Callback для нажатия на checkbox
@@ -111,9 +113,9 @@ class TodoItemListFragment : Fragment() {
     private fun configureAddTaskBtn() {
         // Кнопка добавления задачи
         val addTaskButton = binding?.addTaskBtn
-        addTaskButton?.setOnClickListener { parentFragmentManager.beginTransaction().replace(
-            R.id.fragmentContainerView, TodoItemFragment.newInstance()).
-        addToBackStack("").commit() }
+        addTaskButton?.setOnClickListener {
+            findNavController().navigate(R.id.from_list_to_item)
+        }
     }
 
 
