@@ -15,9 +15,9 @@ import com.monke.yandextodo.R
 import com.monke.yandextodo.databinding.FragmentTaskBinding
 import com.monke.yandextodo.domain.Importance
 import com.monke.yandextodo.domain.TodoItem
-import com.monke.yandextodo.presentationState.TodoItemViewModel
+import com.monke.yandextodo.presentationState.todoFeature.TodoItemViewModel
 import com.monke.yandextodo.utils.DateUtils
-import com.monke.yandextodo.presentationState.TodoItemViewModelFactory
+import com.monke.yandextodo.presentationState.todoFeature.TodoItemViewModelFactory
 import java.util.Calendar
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package com.monke.yandextodo.presentationState
+package com.monke.yandextodo.presentationState.todoFeature
 
 sealed interface UiState {
 

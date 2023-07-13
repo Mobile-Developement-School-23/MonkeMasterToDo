@@ -12,7 +12,14 @@
         tools:layout="@layout/fragment_tasks_list" >
         <action
             android:id="@+id/from_list_to_item"
-            app:destination="@id/todoItemFragment" />
+            app:destination="@id/todoItemFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/from_list_to_settings"
+            app:destination="@id/settingsFragment" />
     </fragment>
 
     <fragment
@@ -22,6 +29,15 @@
         tools:layout="@layout/fragment_task" >
         <action
             android:id="@+id/from_item_to_list"
+            app:destination="@id/todoItemListFragment"
+            app:enterAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.monke.yandextodo.presentation.settingsFeature.SettingsFragment"
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/from_settings_to_list"
             app:destination="@id/todoItemListFragment" />
     </fragment>
 </navigation>

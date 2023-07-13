@@ -17,6 +17,8 @@
     <string name="notification_title_low">В принципе, можно и забить...</string>
     <string name="notification_title_default">Кажется, пора делать дела!</string>
     <string name="notification_title_high">Ой-ой! Срочно нужно кое-что сделать!</string>
+    <string name="settings">Настройки</string>
+    <string name="app_theme">Тема приложения</string>
 
 
     <string-array name="importance_array">
@@ -25,6 +27,11 @@
         <item>Высокий</item>
     </string-array>
 
+    <string-array name="themes_array">
+        <item>Как в системе</item>
+        <item>Светлая</item>
+        <item>Темная</item>
+    </string-array>
 
 
 </resources>

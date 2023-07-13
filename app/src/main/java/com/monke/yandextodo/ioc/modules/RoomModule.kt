@@ -2,6 +2,7 @@ package com.monke.yandextodo.ioc.modules
 
 import android.app.Application
 import androidx.room.Room
+import com.monke.yandextodo.data.localStorage.databases.SettingsDatabase
 import com.monke.yandextodo.data.localStorage.databases.TodoItemsDatabase
 import com.monke.yandextodo.ioc.scopes.AppScope
 import dagger.Module
@@ -17,7 +18,14 @@ class RoomModule {
         Room.databaseBuilder(
             application.applicationContext,
             TodoItemsDatabase::class.java,
-            "todo-items-database").allowMainThreadQueries().build()
+            "todo-items-database").build()
 
+    @AppScope
+    @Provides
+    fun provideSettingsDatabase(application: Application): SettingsDatabase =
+        Room.databaseBuilder(
+            application.applicationContext,
+            SettingsDatabase::class.java,
+            "settings-database").build()
 
 }

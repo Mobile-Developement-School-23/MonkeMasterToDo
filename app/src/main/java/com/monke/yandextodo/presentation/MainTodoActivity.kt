@@ -6,13 +6,15 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
+import androidx.preference.PreferenceManager
 import com.monke.yandextodo.App
 import com.monke.yandextodo.R
 import com.monke.yandextodo.presentation.todoItemFeature.dialogs.SynchronizationDialog
-import com.monke.yandextodo.presentationState.TodoItemViewModel
-import com.monke.yandextodo.presentationState.TodoItemViewModelFactory
-import com.monke.yandextodo.presentationState.UiState
+import com.monke.yandextodo.presentationState.todoFeature.TodoItemViewModel
+import com.monke.yandextodo.presentationState.todoFeature.TodoItemViewModelFactory
+import com.monke.yandextodo.presentationState.todoFeature.UiState
 import javax.inject.Inject
 
 
@@ -25,7 +27,6 @@ class MainTodoActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         (applicationContext as App).applicationComponent
             .mainTodoActivityComponent().inject(this)
 

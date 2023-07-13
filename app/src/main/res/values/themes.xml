@@ -1,18 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/backPrimary</item>
-        <item name="colorOnPrimary">@color/blue</item>
+        <item name="colorOnPrimary">@color/labelPrimary</item>
         <item name="android:textColorPrimary">@color/labelPrimary</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:colorBackground">@color/backPrimary</item>
-        <item name="android:colorPrimaryDark">@color/gray_light</item>
+        <item name="android:colorPrimaryDark">@color/gray_light</item>+
         <item name="colorControlActivated">@color/blue</item>
-        <item name="colorSecondary">@color/blue</item>
+        <item name="colorSecondary">@color/backSecondary</item>
         <item name="colorAccent">@color/blue</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

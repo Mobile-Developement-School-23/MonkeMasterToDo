@@ -28,7 +28,7 @@
         <item name="android:textColor">@color/labelSecondary</item>
     </style>
 
-    <style name="Subhead" parent="Widget.AppCompat.TextView">
+    <style name="Subtitle" parent="Widget.AppCompat.TextView">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/labelPrimary</item>
     </style>

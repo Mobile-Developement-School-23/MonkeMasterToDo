@@ -1,4 +1,4 @@
-package com.monke.yandextodo.presentationState
+package com.monke.yandextodo.presentationState.todoFeature
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -107,7 +107,8 @@ class TodoItemViewModel (
         when (result.statusCode) {
             Constants.CODE_NEED_SYNC -> _uiState.value = UiState.NeedSync
             Constants.CODE_NO_NETWORK -> _uiState.value = UiState.Error(
-                "Упс! Нет подключения к интернету! Придется довольствоваться данными с устройства")
+                "Упс! Нет подключения к интернету! Придется довольствоваться данными с устройства"
+            )
             Constants.CODE_REPOSITORY_SUCCESS -> _uiState.value = UiState.Success
         }
     }

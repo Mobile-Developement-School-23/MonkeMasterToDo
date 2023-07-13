@@ -5,13 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.monke.yandextodo.App
 import com.monke.yandextodo.databinding.DialogSynchronizationBinding
-import com.monke.yandextodo.presentationState.TodoItemViewModel
-import com.monke.yandextodo.presentationState.TodoItemViewModelFactory
+import com.monke.yandextodo.presentationState.todoFeature.TodoItemViewModel
+import com.monke.yandextodo.presentationState.todoFeature.TodoItemViewModelFactory
 import javax.inject.Inject
 
 class SynchronizationDialog: DialogFragment() {

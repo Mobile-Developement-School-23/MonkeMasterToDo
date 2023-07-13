@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.monke.yandextodo.App
@@ -18,8 +17,8 @@ import com.monke.yandextodo.R
 import com.monke.yandextodo.databinding.FragmentTasksListBinding
 import com.monke.yandextodo.domain.TodoItem
 import com.monke.yandextodo.presentation.todoItemFeature.adapters.TodoItemAdapter
-import com.monke.yandextodo.presentationState.TodoItemViewModel
-import com.monke.yandextodo.presentationState.TodoItemViewModelFactory
+import com.monke.yandextodo.presentationState.todoFeature.TodoItemViewModel
+import com.monke.yandextodo.presentationState.todoFeature.TodoItemViewModelFactory
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -58,6 +57,7 @@ class TodoItemListFragment : Fragment() {
 
         configureTasksListAdapter()
         configureAddTaskBtn()
+        configureSettingsBtn()
     }
 
     override fun onDestroy() {
@@ -115,6 +115,12 @@ class TodoItemListFragment : Fragment() {
         val addTaskButton = binding?.addTaskBtn
         addTaskButton?.setOnClickListener {
             findNavController().navigate(R.id.from_list_to_item)
+        }
+    }
+
+    private fun configureSettingsBtn() {
+        binding?.settingsBtn?.setOnClickListener {
+            findNavController().navigate(R.id.from_list_to_settings)
         }
     }
 

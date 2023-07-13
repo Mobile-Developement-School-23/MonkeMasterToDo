@@ -1,4 +1,4 @@
-package com.monke.yandextodo.presentationState
+package com.monke.yandextodo.presentationState.todoFeature
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
