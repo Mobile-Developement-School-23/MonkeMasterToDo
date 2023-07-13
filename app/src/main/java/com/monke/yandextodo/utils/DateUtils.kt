@@ -20,4 +20,12 @@ object DateUtils {
         val dateFormatter = SimpleDateFormat("d MMMM yyyy", Locale("ru"))
         return dateFormatter.format(date!!)
     }
+
+    fun formatDate(date: Calendar): String {
+        return formatDate(
+            day = date.get(Calendar.DAY_OF_MONTH),
+            month = date.get(Calendar.MONTH),
+            year = date.get(Calendar.YEAR)
+        )
+    }
 }

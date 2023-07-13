@@ -10,6 +10,8 @@ import com.monke.yandextodo.domain.Constants
 import com.monke.yandextodo.domain.Importance
 import com.monke.yandextodo.domain.TodoItem
 import com.monke.yandextodo.utils.notifications.NotificationScheduler
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -25,6 +27,15 @@ class TodoItemViewModel (
     var uiState: LiveData<UiState> = _uiState
 
     val errorMessage = MutableLiveData<String?>()
+
+    private val _newTodoItemText = MutableStateFlow("")
+    val newTodoItemText: StateFlow<String> = _newTodoItemText
+
+    private val _newTodoItemImportance = MutableStateFlow<Importance?>(null)
+    val newTodoItemImportance: StateFlow<Importance?> = _newTodoItemImportance
+
+    private val _newTodoItemDeadline = MutableStateFlow<Calendar?>(null)
+    val newTodoItemDeadline: StateFlow<Calendar?> = _newTodoItemDeadline
 
     init {
         viewModelScope.launch {
@@ -53,27 +64,30 @@ class TodoItemViewModel (
     fun saveTodoItem(newTodoItem: TodoItem) {
         viewModelScope.launch {
             newTodoItem.modifiedDate = Calendar.getInstance()
+            clearNewTodoItemFields()
+
             val response = todoItemsRepository.setTodoItem(newTodoItem)
             if (response.statusCode != 200)
                 errorMessage.value = response.message
 
             notificationScheduler.cancelTodoNotification(newTodoItem.id)
-            if (newTodoItem.deadlineDate != null)
+            if (newTodoItem.deadlineDate != null && !newTodoItem.completed)
                 notificationScheduler.scheduleTodoNotification(newTodoItem)
         }
     }
 
-    fun addTodoItem(text: String, deadlineDate: Calendar?, importance: Importance) {
+    fun addTodoItem(text: String, deadline: Calendar? = null, importance: Importance) {
         viewModelScope.launch {
             val todoItem = TodoItem(
                 text = text,
-                deadlineDate = deadlineDate,
+                deadlineDate = deadline,
                 importance = importance,
                 id = UUID.randomUUID().toString(),
                 creationDate = Calendar.getInstance(),
                 lastUpdatedBy = "no id",
                 modifiedDate = Calendar.getInstance(),
             )
+
             val response = todoItemsRepository.addTodoItem(todoItem)
             if (response.statusCode != 200)
                 errorMessage.value = response.message
@@ -119,6 +133,25 @@ class TodoItemViewModel (
                 notificationScheduler.scheduleTodoNotification(todoItem)
         }
     }
+
+    fun setNewTodoItemText(text: String) {
+        _newTodoItemText.value = text
+    }
+
+    fun setNewTodoItemDeadline(deadline: Calendar?) {
+        _newTodoItemDeadline.value = deadline
+    }
+
+    fun setNewTodoItemImportance(importance: Importance?) {
+        _newTodoItemImportance.value = importance
+    }
+
+    fun clearNewTodoItemFields() {
+        _newTodoItemImportance.value = null
+        _newTodoItemDeadline.value = null
+        _newTodoItemText.value = ""
+    }
+
 
 
 

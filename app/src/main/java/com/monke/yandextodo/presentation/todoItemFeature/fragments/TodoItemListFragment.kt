@@ -73,6 +73,7 @@ class TodoItemListFragment : Fragment() {
         val adapter = TodoItemAdapter(object : TodoItemAdapter.TodoItemClickListener {
             // Callback для нажатия на item
             override fun onItemClick(todoItem: TodoItem) {
+                viewModel.clearNewTodoItemFields()
                 findNavController().navigate(
                     R.id.from_list_to_item,
                     bundleOf(TodoItemFragment.ID_KEY to todoItem.id))
@@ -100,12 +101,6 @@ class TodoItemListFragment : Fragment() {
                 adapter.todoItemList = it
             }
         }
-//        viewModel.tasksList.observe(viewLifecycleOwner) {
-//            val value = viewModel.tasksList.value
-//            if (value != null)
-//                adapter.todoItemList = value
-//        }
-
 
     }
 
@@ -114,7 +109,9 @@ class TodoItemListFragment : Fragment() {
         // Кнопка добавления задачи
         val addTaskButton = binding?.addTaskBtn
         addTaskButton?.setOnClickListener {
+            viewModel.clearNewTodoItemFields()
             findNavController().navigate(R.id.from_list_to_item)
+
         }
     }
 

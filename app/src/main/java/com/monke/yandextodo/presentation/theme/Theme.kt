@@ -13,7 +13,9 @@ val lightColorPalette = lightColors(
     onPrimary = LightLabelPrimary,
     secondary = LightBackSecondary,
     background = LightBackPrimary,
-    onBackground = LightLabelPrimary
+    onBackground = LightLabelPrimary,
+    surface = LightBackSecondary,
+    secondaryVariant = Blue
 )
 
 val darkColorPalette = darkColors(
@@ -21,7 +23,9 @@ val darkColorPalette = darkColors(
     onPrimary = DarkLabelPrimary,
     secondary = DarkBackSecondary,
     background = DarkBackPrimary,
-    onBackground = DarkLabelPrimary
+    onBackground = DarkLabelPrimary,
+    surface = DarkBackSecondary,
+    secondaryVariant = Blue
 )
 
 
