@@ -9,12 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.monke.yandextodo.App
 import com.monke.yandextodo.R
 import com.monke.yandextodo.databinding.FragmentTasksListBinding
+import com.monke.yandextodo.domain.Constants
 import com.monke.yandextodo.domain.TodoItem
 import com.monke.yandextodo.presentation.todoItemFeature.adapters.TodoItemAdapter
 import com.monke.yandextodo.presentationState.todoFeature.TodoItemViewModel
@@ -96,10 +100,16 @@ class TodoItemListFragment : Fragment() {
             false)
 
         // Подписывается на изменение списка задач
-        lifecycleScope.launch {
-            viewModel._tasksList.collect {
-                adapter.todoItemList = it
-            }
+        viewModel.tasksList.observe(viewLifecycleOwner) {
+            adapter.todoItemList = it
+        }
+
+
+
+        // Подписывается на удаленную задачу
+        viewModel.deletingItem.observe(viewLifecycleOwner) {todoItem ->
+            if (todoItem != null)
+                showCancelDeleteSnackBar(todoItem)
         }
 
     }
@@ -121,6 +131,30 @@ class TodoItemListFragment : Fragment() {
         }
     }
 
+    private fun showCancelDeleteSnackBar(todoItem: TodoItem) {
+        val snackbarMessage = "${getString(R.string.delete)} ${todoItem.text}?"
+        val snackbar = Snackbar.make(binding!!.tasksRecycler,
+            snackbarMessage,
+            Constants.SNACKBAR_LENGTH).apply {
+                setAction(R.string.cancel) {
+                    viewModel.cancelDelete(todoItem)
+                }
+            addCallback(object : Snackbar.Callback() {
+                override fun onShown(sb: Snackbar?) {
+                    super.onShown(sb)
+                }
 
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+
+                    if (event == DISMISS_EVENT_TIMEOUT) {
+                        viewModel.confirmDelete()
+                    }
+                }
+            })
+        }
+
+        snackbar.show()
+    }
 
 }

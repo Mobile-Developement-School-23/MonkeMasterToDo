@@ -1,5 +1,6 @@
 package com.monke.yandextodo.data.repository
 
+import androidx.lifecycle.MutableLiveData
 import com.monke.yandextodo.data.cacheStorage.TodoItemCacheStorage
 import com.monke.yandextodo.data.converters.TodoItemConverters
 import com.monke.yandextodo.data.localStorage.databases.TodoItemsDatabase
@@ -62,7 +63,7 @@ class TodoItemsRepository @Inject constructor(
 
             val localData = todoItemsDatabase.todoItemDao()
                 .getTodoItemsList().first().map { TodoItemConverters.roomToModel(it) }
-            val serverData = cacheStorage.getTodoItemsList().first()
+            val serverData = cacheStorage.getTodoItemsList().value!!
             val serverItemsByIdMap = serverData.associateBy { it.id }
 
             // Проверяем размер списков
@@ -97,7 +98,7 @@ class TodoItemsRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             // Сравниваем данные с сервера и бд
             val localData = todoItemsDatabase.todoItemDao().getTodoItemsList().first()
-            val serverData = cacheStorage.getTodoItemsList().first()
+            val serverData = cacheStorage.getTodoItemsList().value!!
             val todoItemsByIdMap = serverData.associateBy { it.id }
             // Если в бд есть задачи, отсутствующие на сервере, удаляем их из бд
             for (todoItem in localData) {
@@ -247,7 +248,7 @@ class TodoItemsRepository @Inject constructor(
         response
     }
 
-    fun getTodoItemsList(): MutableStateFlow<ArrayList<TodoItem>> {
+    fun getTodoItemsList(): MutableLiveData<ArrayList<TodoItem>> {
         return cacheStorage.getTodoItemsList()
     }
 
@@ -294,7 +295,7 @@ class TodoItemsRepository @Inject constructor(
                 revision))
     }
 
-    private fun saveTodoItemsListToCache(todoItemsList: List<TodoItem>?) {
+    private suspend fun saveTodoItemsListToCache(todoItemsList: List<TodoItem>?) {
         if (todoItemsList != null) {
             for (todoItem in todoItemsList) {
                 cacheStorage.addTodoItem(todoItem)

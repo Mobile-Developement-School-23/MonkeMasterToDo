@@ -8,7 +8,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,7 +33,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
@@ -40,7 +42,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -62,8 +63,6 @@ import com.monke.yandextodo.domain.Importance
 import com.monke.yandextodo.domain.TodoItem
 import com.monke.yandextodo.presentation.theme.AppTheme
 import com.monke.yandextodo.presentation.theme.Blue
-import com.monke.yandextodo.presentation.theme.DarkLabelDisable
-import com.monke.yandextodo.presentation.theme.LightLabelDisable
 import com.monke.yandextodo.presentation.theme.Red
 import com.monke.yandextodo.presentationState.todoFeature.TodoItemViewModel
 import com.monke.yandextodo.presentationState.todoFeature.TodoItemViewModelFactory
@@ -128,15 +127,18 @@ class TodoItemFragment: Fragment() {
         todoItemDeadline: State<Calendar?>,
         todoItemDeadlineTime: State<Calendar?>
     ) {
+        // var offset by remember { mutableStateOf(0f) }
+        var scrollState = rememberScrollState()
         return Scaffold(
-            topBar = { TopAppBar(todoItemText, todoItemImportance) }
+            topBar = { TopAppBar(todoItemText, todoItemImportance, scrollState.value) }
         ) { padding ->
             Column(
                 modifier = Modifier
+
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScroll(scrollState)
 
             ) {
                 TodoTextInput(todoItemText)
@@ -175,10 +177,15 @@ class TodoItemFragment: Fragment() {
     @Composable
     private fun TopAppBar(
         todoItemText: State<String>,
-        todoItemImportance: State<Importance?>
+        todoItemImportance: State<Importance?>,
+        scrollOffset: Int
     ) {
+        val backgroundColor = if (!isSystemInDarkTheme() || scrollOffset <= 0)
+                                   MaterialTheme.colors.primary
+                              else MaterialTheme.colors.secondary
         return TopAppBar(
-            backgroundColor = MaterialTheme.colors.primary
+            backgroundColor = backgroundColor,
+            elevation = if (scrollOffset <= 0) 0.dp else 2.dp
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

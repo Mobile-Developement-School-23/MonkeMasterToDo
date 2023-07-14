@@ -15,4 +15,6 @@ object Constants {
     const val WORK_TAG = "Synchronization"
     const val WORK_NAME = "Synchronization"
 
+    const val SNACKBAR_LENGTH = 5000
+
 }

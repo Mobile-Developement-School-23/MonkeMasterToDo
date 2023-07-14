@@ -21,7 +21,7 @@ class TodoItemViewModel (
     private val notificationScheduler: NotificationScheduler
 ) : ViewModel() {
 
-    val _tasksList = todoItemsRepository.getTodoItemsList()
+    val tasksList = todoItemsRepository.getTodoItemsList()
 
     private val _uiState = MutableLiveData<UiState>()
     var uiState: LiveData<UiState> = _uiState
@@ -40,6 +40,9 @@ class TodoItemViewModel (
     private val _newTodoItemDeadlineTime = MutableStateFlow<Calendar?>(null)
     val newTodoItemDeadlineTime: StateFlow<Calendar?> = _newTodoItemDeadlineTime
 
+    private val _deletingItem = MutableLiveData<TodoItem?>(null)
+    val deletingItem: LiveData<TodoItem?> = _deletingItem
+
     init {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
@@ -57,6 +60,7 @@ class TodoItemViewModel (
     fun deleteTodoItem(todoItem: TodoItem) {
         viewModelScope.launch {
             val response = todoItemsRepository.deleteTodoItem(todoItem)
+            _deletingItem.value = todoItem
             if (response.statusCode != 200)
                 errorMessage.value = response.message
 
@@ -125,13 +129,7 @@ class TodoItemViewModel (
                 modifiedDate = Calendar.getInstance(),
             )
 
-            val response = todoItemsRepository.addTodoItem(todoItem)
-            if (response.statusCode != 200)
-                errorMessage.value = response.message
-
-            if (todoItem.deadlineDate != null)
-                notificationScheduler.scheduleTodoNotification(todoItem)
-
+            addTodoItem(todoItem)
         }
     }
 
@@ -165,9 +163,12 @@ class TodoItemViewModel (
     }
 
     private fun scheduleNotifications() {
-        for (todoItem in _tasksList.value) {
-            if (todoItem.deadlineDate != null)
-                notificationScheduler.scheduleTodoNotification(todoItem)
+        var list = tasksList.value
+        if (list != null) {
+            for (todoItem in list) {
+                if (todoItem.deadlineDate != null)
+                    notificationScheduler.scheduleTodoNotification(todoItem)
+            }
         }
     }
 
@@ -194,6 +195,26 @@ class TodoItemViewModel (
         _newTodoItemDeadlineTime.value = null
     }
 
+    fun cancelDelete(todoItem: TodoItem) {
+        viewModelScope.launch {
+            addTodoItem(todoItem)
+            _deletingItem.value = null
+        }
+
+    }
+
+    fun confirmDelete() {
+        _deletingItem.value = null
+    }
+
+    private suspend fun addTodoItem(todoItem: TodoItem) {
+        val response = todoItemsRepository.addTodoItem(todoItem)
+        if (response.statusCode != 200)
+            errorMessage.value = response.message
+
+        if (todoItem.deadlineDate != null)
+            notificationScheduler.scheduleTodoNotification(todoItem)
+    }
 
 
 

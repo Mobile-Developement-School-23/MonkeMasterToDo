@@ -16,7 +16,7 @@ import dagger.Component
     CacheStorageModule::class,
     RoomModule::class,
     NetworkModule::class,
-    NotificatorModule::class
+    NotificatorModule::class,
 ])
 interface ApplicationComponent {
 

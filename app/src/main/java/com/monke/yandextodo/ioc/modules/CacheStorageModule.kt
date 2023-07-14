@@ -10,9 +10,5 @@ class CacheStorageModule {
 
     @AppScope
     @Provides
-    fun provideTodoItemCacheStorage(): TodoItemCacheStorage {
-        return TodoItemCacheStorage.getInstance()
-    }
-
-
+    fun provideCacheStorage() = TodoItemCacheStorage()
 }

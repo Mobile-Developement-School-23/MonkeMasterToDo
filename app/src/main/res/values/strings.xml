@@ -20,6 +20,7 @@
     <string name="settings">Настройки</string>
     <string name="app_theme">Тема приложения</string>
     <string name="deadline_time">Сделать к</string>
+    <string name="cancel">Отменить</string>
 
 
     <string-array name="importance_array">
