@@ -20,7 +20,6 @@ class TodoItemCacheStorage {
 
     fun addTodoItem(todoItem: TodoItem) {
         todoItemsList.value?.add(todoItem)
-        todoItemsList.value = todoItemsList.value
     }
 
     fun deleteTodoItem(todoItem: TodoItem) {
