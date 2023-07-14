@@ -28,4 +28,16 @@ object DateUtils {
             year = date.get(Calendar.YEAR)
         )
     }
+
+    fun formatTime(date: Calendar): String {
+        val hour = date.get(Calendar.HOUR_OF_DAY)
+        var sHour = hour.toString()
+        if (hour < 10)
+            sHour = "0$hour"
+        val minute = date.get(Calendar.MINUTE)
+        var sMinute = minute.toString()
+        if (minute < 10)
+            sMinute = "0$minute"
+        return "$sHour:$sMinute"
+    }
 }

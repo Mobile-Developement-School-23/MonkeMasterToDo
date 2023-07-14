@@ -10,6 +10,7 @@
         <item name="colorControlActivated">@color/blue</item>
         <item name="colorSecondary">@color/backSecondary</item>
         <item name="colorAccent">@color/blue</item>
+        <item name="android:navigationBarColor">@color/backPrimary</item>
     </style>
 
 </resources>

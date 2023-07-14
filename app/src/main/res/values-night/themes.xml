@@ -9,6 +9,7 @@
         <item name="android:colorPrimaryDark">@color/gray_light</item>+
         <item name="colorControlActivated">@color/blue</item>
         <item name="colorAccent">@color/blue</item>
+        <item name="android:navigationBarColor">@color/black</item>
     </style>
 
 </resources>

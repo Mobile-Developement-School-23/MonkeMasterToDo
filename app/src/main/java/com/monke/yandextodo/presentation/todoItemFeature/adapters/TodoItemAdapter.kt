@@ -79,11 +79,11 @@ class TodoItemAdapter(private val onClickListener: TodoItemClickListener):
             // Отображает дату дедлайна, если у задачи она есть
             val dateTxt = binding.dateTxt
             if (todoItem.deadlineDate != null) {
-                val day = todoItem.deadlineDate?.get(Calendar.DAY_OF_MONTH)
-                val month = todoItem.deadlineDate?.get(Calendar.MONTH)
-                val year = todoItem.deadlineDate?.get(Calendar.YEAR)
-                if (day != null && month != null && year != null)
-                    dateTxt.text = DateUtils.formatDate(day, month, year)
+                val sDate = DateUtils.formatDate(todoItem.deadlineDate!!)
+                val sTime = DateUtils.formatTime(todoItem.deadlineDate!!)
+                val sDeadline = "$sDate\n$sTime"
+                dateTxt.text = sDeadline
+
             } else
                 dateTxt.visibility = View.GONE
 

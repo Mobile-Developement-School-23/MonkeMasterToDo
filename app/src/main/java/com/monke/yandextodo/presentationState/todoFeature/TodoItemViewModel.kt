@@ -37,6 +37,9 @@ class TodoItemViewModel (
     private val _newTodoItemDeadline = MutableStateFlow<Calendar?>(null)
     val newTodoItemDeadline: StateFlow<Calendar?> = _newTodoItemDeadline
 
+    private val _newTodoItemDeadlineTime = MutableStateFlow<Calendar?>(null)
+    val newTodoItemDeadlineTime: StateFlow<Calendar?> = _newTodoItemDeadlineTime
+
     init {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
@@ -76,8 +79,42 @@ class TodoItemViewModel (
         }
     }
 
-    fun addTodoItem(text: String, deadline: Calendar? = null, importance: Importance) {
+    fun saveTodoItem(
+        oldTodoItem: TodoItem,
+        text: String,
+        deadline: Calendar? = null,
+        importance: Importance,
+        deadlineTime: Calendar?
+    ) {
+        var hours = deadlineTime?.get(Calendar.HOUR_OF_DAY)
+        if (hours == null)
+            hours = 0
+        deadline?.set(Calendar.HOUR_OF_DAY, hours)
+
+        var minutes = deadlineTime?.get(Calendar.MINUTE)
+        if (minutes == null)
+            minutes = 0
+        deadline?.set(Calendar.MINUTE, minutes)
+
+        oldTodoItem.text = text
+        oldTodoItem.deadlineDate = deadline
+        oldTodoItem.importance = importance
+        saveTodoItem(oldTodoItem)
+    }
+
+    fun addTodoItem(text: String,
+                    deadline: Calendar? = null,
+                    importance: Importance,
+                    deadlineTime: Calendar?
+    ) {
         viewModelScope.launch {
+            val hours = deadlineTime?.get(Calendar.HOUR_OF_DAY)
+            if (hours != null)
+                deadline?.set(Calendar.HOUR_OF_DAY, hours)
+            val minutes = deadlineTime?.get(Calendar.MINUTE)
+            if (minutes != null)
+                deadline?.set(Calendar.MINUTE, minutes)
+
             val todoItem = TodoItem(
                 text = text,
                 deadlineDate = deadline,
@@ -146,10 +183,15 @@ class TodoItemViewModel (
         _newTodoItemImportance.value = importance
     }
 
+    fun setNewTodoItemDeadlineTime(deadlineTime: Calendar?) {
+        _newTodoItemDeadlineTime.value = deadlineTime
+    }
+
     fun clearNewTodoItemFields() {
         _newTodoItemImportance.value = null
         _newTodoItemDeadline.value = null
         _newTodoItemText.value = ""
+        _newTodoItemDeadlineTime.value = null
     }
 
 

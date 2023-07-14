@@ -9,6 +9,7 @@ val Blue = Color(0xFF007AFF)
 val BlueTranslucent = Color(0x4D007AFF)
 val Gray = Color(0xFF8E8E93)
 val GrayLight = Color(0xFFD1D1D6)
+val DarkGrayLight = Color(0xFF48484A)
 val White = Color(0xFFFFFFFF)
 
 val LightSupportSeparator = Color(0x33000000)
@@ -30,4 +31,5 @@ val DarkLabelDisable = Color(0x26FFFFFF)
 val DarkBackPrimary = Color(0xFF161618)
 val DarkBackSecondary = Color(0xFF252528)
 val DarkBackElevated = Color(0xFF3C3C3F)
+
 

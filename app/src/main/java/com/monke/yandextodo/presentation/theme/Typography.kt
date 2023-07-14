@@ -15,7 +15,7 @@ val typography = Typography(
     ),
     button = TextStyle(
         fontSize = 14.sp,
-        letterSpacing = 0.01.sp
+        letterSpacing = 1.sp
     ),
     body1 = TextStyle(
         fontSize = 18.sp

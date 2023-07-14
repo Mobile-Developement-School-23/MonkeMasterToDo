@@ -12,6 +12,7 @@ import com.monke.yandextodo.utils.workers.notificationFeature.NotificationWorker
 import java.util.Calendar
 import java.util.UUID
 import java.util.concurrent.TimeUnit
+import kotlin.math.max
 
 // Класс для отправки уведомлений в дату дедлайна
 class NotificationScheduler (
@@ -26,12 +27,10 @@ class NotificationScheduler (
 
     // Откладывает уведомление о задаче на время дедлайна
     fun scheduleTodoNotification(todoItem: TodoItem) {
-        val timeDiff = todoItem.deadlineDate?.timeInMillis?.minus(
-            Calendar.getInstance().timeInMillis)
+        var timeDiff = todoItem.deadlineDate?.timeInMillis?.minus(
+            Calendar.getInstance().timeInMillis) ?: return
 
-        // Если задание уже просрочено, то уведомление не покажется
-        if (timeDiff == null || timeDiff < 0)
-            return
+        timeDiff = max(timeDiff, 0)
 
         val title = when (todoItem.importance) {
             Importance.NO_IMPORTANCE -> context.getString(R.string.notification_title_default)
@@ -46,7 +45,7 @@ class NotificationScheduler (
         data.putString(TITLE_KEY, title)
 
         val notificationWork = OneTimeWorkRequestBuilder<NotificationWorker>()
-            .setInitialDelay(20, TimeUnit.SECONDS)
+            .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
             .setInputData(data.build())
             .setId(UUID.fromString(todoItem.id))
             .build()

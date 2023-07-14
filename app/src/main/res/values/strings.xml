@@ -19,6 +19,7 @@
     <string name="notification_title_high">Ой-ой! Срочно нужно кое-что сделать!</string>
     <string name="settings">Настройки</string>
     <string name="app_theme">Тема приложения</string>
+    <string name="deadline_time">Сделать к</string>
 
 
     <string-array name="importance_array">

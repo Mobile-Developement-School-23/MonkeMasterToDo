@@ -19,5 +19,6 @@
     <color name="backSecondary">#FFFFFFFF</color>
 
     <color name="transparent">#00FFFFFF</color>
+    <color name="black">#000000</color>
 
 </resources>
