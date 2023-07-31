@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="H1" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">34sp</item>
+        <item name="android:textColor">@color/labelPrimary</item>
+    </style>
+
+    <style name="H2" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">22sp</item>
+        <item name="android:letterSpacing">0.03</item>
+        <item name="android:textColor">@color/labelPrimary</item>
+    </style>
+
+    <style name="ButtonText" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:textColor">@color/labelPrimary</item>
+    </style>
+
+    <style name="Body" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/labelPrimary</item>
+    </style>
+
+    <style name="Body2" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/labelSecondary</item>
+    </style>
+
+    <style name="Subtitle" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/labelPrimary</item>
+    </style>
+
+
+</resources>

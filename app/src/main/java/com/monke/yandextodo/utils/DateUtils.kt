@@ -20,4 +20,24 @@ object DateUtils {
         val dateFormatter = SimpleDateFormat("d MMMM yyyy", Locale("ru"))
         return dateFormatter.format(date!!)
     }
+
+    fun formatDate(date: Calendar): String {
+        return formatDate(
+            day = date.get(Calendar.DAY_OF_MONTH),
+            month = date.get(Calendar.MONTH),
+            year = date.get(Calendar.YEAR)
+        )
+    }
+
+    fun formatTime(date: Calendar): String {
+        val hour = date.get(Calendar.HOUR_OF_DAY)
+        var sHour = hour.toString()
+        if (hour < 10)
+            sHour = "0$hour"
+        val minute = date.get(Calendar.MINUTE)
+        var sMinute = minute.toString()
+        if (minute < 10)
+            sMinute = "0$minute"
+        return "$sHour:$sMinute"
+    }
 }

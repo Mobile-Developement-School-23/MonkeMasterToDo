@@ -1,8 +1,8 @@
 package com.monke.yandextodo.data.networkService.pojo
 
 
-data class ServiceResponse (
+data class TodoItemsContainer (
     var status: String,
     var revision: Int,
-    var list: ArrayList<TodoItemPojo>
+    var list: List<TodoItemPojo>
 )

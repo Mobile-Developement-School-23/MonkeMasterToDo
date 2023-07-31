@@ -13,7 +13,8 @@ data class TodoItemRoom(
     val creationDate: Long,
     val deadlineDate: Long?,
     val modifiedDate: Long?,
-    val completed: Boolean
+    val completed: Boolean,
+    val lastUpdatedBy: String?
 ) {
 
 

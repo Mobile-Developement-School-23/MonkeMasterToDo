@@ -1,4 +1,4 @@
-package com.monke.yandextodo.data.networkService
+package com.monke.yandextodo.data.networkService.interceptors
 
 import com.monke.yandextodo.domain.Constants
 import okhttp3.Interceptor

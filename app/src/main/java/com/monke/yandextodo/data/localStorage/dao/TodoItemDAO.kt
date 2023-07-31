@@ -11,13 +11,15 @@ interface TodoItemDAO {
     @Query("SELECT * from todoItemRoom")
     fun getTodoItemsList(): Flow<List<TodoItemRoom>>
 
-    @Insert
-     fun addTodoItems(vararg todoItems: TodoItemRoom)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addTodoItems(vararg todoItems: TodoItemRoom)
 
     @Delete
-     fun delete(todoItem: TodoItemRoom)
+    fun delete(todoItem: TodoItemRoom)
 
     @Update
-     fun updateTodoItems(vararg todoItems: TodoItemRoom)
+    fun updateTodoItems(vararg todoItems: TodoItemRoom)
+
+
 
 }

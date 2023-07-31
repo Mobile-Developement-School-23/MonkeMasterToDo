@@ -1,19 +1,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.YandexToDo" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/primary</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
-
+    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/backPrimary</item>
+        <item name="colorOnPrimary">@color/labelPrimary</item>
+        <item name="android:textColorPrimary">@color/labelPrimary</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:colorBackground">@color/backPrimary</item>
+        <item name="android:colorPrimaryDark">@color/gray_light</item>+
+        <item name="colorControlActivated">@color/blue</item>
+        <item name="colorSecondary">@color/backSecondary</item>
+        <item name="colorAccent">@color/blue</item>
+        <item name="android:navigationBarColor">@color/backPrimary</item>
     </style>
+
 </resources>

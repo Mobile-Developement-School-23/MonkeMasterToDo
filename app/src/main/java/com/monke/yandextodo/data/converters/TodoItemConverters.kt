@@ -1,6 +1,5 @@
 package com.monke.yandextodo.data.converters
 
-import androidx.room.TypeConverter
 import com.monke.yandextodo.data.localStorage.roomModels.TodoItemRoom
 import com.monke.yandextodo.data.networkService.pojo.TodoItemPojo
 import com.monke.yandextodo.domain.Importance
@@ -17,7 +16,8 @@ object TodoItemConverters {
             importance = todoItemRoom.importance,
             completed = todoItemRoom.completed,
             creationDate = calendarFromLong(todoItemRoom.creationDate)!!,
-            modifiedDate = calendarFromLong(todoItemRoom.modifiedDate)
+            modifiedDate = calendarFromLong(todoItemRoom.modifiedDate),
+            lastUpdatedBy = todoItemRoom.lastUpdatedBy
         )
     }
 
@@ -29,23 +29,24 @@ object TodoItemConverters {
             importance = todoItem.importance,
             completed = todoItem.completed,
             creationDate = calendarToLong(todoItem.creationDate)!!,
-            modifiedDate = calendarToLong(todoItem.modifiedDate)
+            modifiedDate = calendarToLong(todoItem.modifiedDate),
+            lastUpdatedBy = todoItem.lastUpdatedBy
         )
     }
 
-    fun calendarFromLong(time: Long?): Calendar? {
+    private fun calendarFromLong(time: Long?): Calendar? {
         if (time == null)
             return null
         return Calendar.getInstance().also { it.timeInMillis = time }
     }
 
-    fun calendarToLong(calendar: Calendar?): Long? {
+    private fun calendarToLong(calendar: Calendar?): Long? {
         if (calendar == null)
             return null
         return calendar.timeInMillis
     }
 
-    fun importanceToString(importance: Importance): String {
+    private fun importanceToString(importance: Importance): String {
         if (importance == Importance.NO_IMPORTANCE)
             return "basic"
         if (importance == Importance.LOW)
@@ -53,7 +54,7 @@ object TodoItemConverters {
         return "important"
     }
 
-    fun importanceFromString(importance: String): Importance {
+    private fun importanceFromString(importance: String): Importance {
         if (importance == "basic")
             return Importance.NO_IMPORTANCE
         if (importance == "low")
@@ -61,7 +62,7 @@ object TodoItemConverters {
         return Importance.HIGH
     }
 
-    fun todoItemToPojo(todoItem: TodoItem): TodoItemPojo {
+    fun modelToPojo(todoItem: TodoItem): TodoItemPojo {
         return TodoItemPojo(
             id = todoItem.id,
             text = todoItem.text,
@@ -75,7 +76,8 @@ object TodoItemConverters {
         )
     }
 
-    fun todoItemFromPojo(todoItemPojo: TodoItemPojo): TodoItem {
+    fun modelFromPojo(todoItemPojo: TodoItemPojo): TodoItem {
+
         return TodoItem(
             id = todoItemPojo.id,
             text = todoItemPojo.text,

@@ -4,19 +4,23 @@ import android.app.Application
 import com.monke.yandextodo.App
 import com.monke.yandextodo.ioc.modules.CacheStorageModule
 import com.monke.yandextodo.ioc.modules.NetworkModule
+import com.monke.yandextodo.ioc.modules.NotificatorModule
 import com.monke.yandextodo.ioc.modules.RoomModule
-import com.monke.yandextodo.presentation.todoItemFeature.fragments.TodoItemFragment
+import com.monke.yandextodo.ioc.scopes.AppScope
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Singleton
 
-@Singleton
+
+@AppScope
 @Component(modules = [
     CacheStorageModule::class,
     RoomModule::class,
-    NetworkModule::class
+    NetworkModule::class,
+    NotificatorModule::class,
 ])
 interface ApplicationComponent {
+
+    fun mainTodoActivityComponent(): MainTodoActivityComponent
 
     fun inject(app: App)
 
@@ -29,4 +33,7 @@ interface ApplicationComponent {
         fun application(application: Application): Builder
 
     }
+
+
 }
+

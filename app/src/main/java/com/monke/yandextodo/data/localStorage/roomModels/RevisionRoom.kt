@@ -1,12 +1,11 @@
 package com.monke.yandextodo.data.localStorage.roomModels
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class TodoItemsListRoom (
+data class RevisionRoom (
     @PrimaryKey
-    @ColumnInfo(name = "revision")
+    var id: String,
     var revision: Int
 )

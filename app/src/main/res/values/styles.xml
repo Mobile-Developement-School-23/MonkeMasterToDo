@@ -1,53 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Subhead" parent="Widget.AppCompat.TextView">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">#000000</item>
-    </style>
-
-    <style name="Body" parent="Widget.AppCompat.TextView">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">#000000</item>
-    </style>
-
-    <style name="ButtonText" parent="Widget.AppCompat.TextView">
-        <item name="android:textSize">14sp</item>
-        <item name="android:letterSpacing">0.01</item>
-        <item name="android:textColor">#000000</item>
-    </style>
-
-    <style name="Title" parent="Widget.AppCompat.TextView">
-        <item name="android:textSize">22sp</item>
-        <item name="android:letterSpacing">0.03</item>
-        <item name="android:textColor">#000000</item>
-    </style>
-
-    <style name="LargeTitle" parent="Widget.AppCompat.TextView">
-        <item name="android:textSize">34sp</item>
-        <item name="android:textColor">#000000</item>
-    </style>
-
-
-    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorOnPrimary">@color/blue</item>
-        <item name="android:textColorPrimary">@color/black</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:colorBackground">@color/primary</item>
-        <item name="android:colorPrimaryDark">@color/gray_light</item>
-        <item name="colorControlActivated">@color/blue</item>
-        <item name="colorSecondary">@color/blue</item>
-        <item name="colorAccent">@color/blue</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
     <style name="SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
-        <item name="android:color">@color/primary</item>
+        <item name="android:color">@color/backPrimary</item>
         <item name="cornerFamily">cut</item>
         <item name="cornerSize">@dimen/rounding_radius</item>
 
@@ -56,6 +11,15 @@
     <style name="EditText" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="shapeAppearance">@style/SmallComponent</item>
         <item name="hintTextColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="AlertDialogStyle" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:textColor">@color/labelPrimary</item>
+        <item name="android:background">@color/backPrimary</item>
+    </style>
+
+    <style name="Body.AccentText">
+        <item name="android:textColor">@color/blue</item>
     </style>
 
 

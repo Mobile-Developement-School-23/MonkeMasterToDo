@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="separator">#33FFFFFF</color>
+    <color name="overlay">#52000000</color>
+
+    <color name="labelPrimary">#FFFFFF</color>
+    <color name="labelSecondary">#99FFFFFF</color>
+    <color name="tertiary">#66FFFFFF</color>
+    <color name="disable">#26FFFFFF</color>
+
+    <color name="red">#FF3B30</color>
+    <color name="green">#34C759</color>
+    <color name="blue">#007AFF</color>
+    <color name="gray">#8E8E93</color>
+    <color name="gray_light">#48484A</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="backPrimary">#161618</color>
+    <color name="backSecondary">#252528</color>
+
+    <color name="transparent">#3C3C3F</color>
+</resources>
